@@ -7,18 +7,9 @@ import {
 import {
   Link,
 } from 'react-router-dom';
-import * as firebase from 'firebase';
-import firebaseConfig from '../firebase.config';
-firebase.initializeApp(firebaseConfig);
+import firebase from '../firebase';
 
 const Home = (props) => {
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      props.setUser(user);
-    } else {
-      props.setUser();
-    }
-  })
   const googleLogin = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);
@@ -48,7 +39,7 @@ const Home = (props) => {
       {
         props.user &&
         <div className="d-flex">
-          <Link to="/main"><Button color="blue" className="mr-2">내 캘린더로</Button></Link>
+          <Link to="/mycalendar"><Button color="blue" className="mr-2">메인으로</Button></Link>
           <Button color="dark" onClick={logout}>로그아웃</Button>
         </div>
       }

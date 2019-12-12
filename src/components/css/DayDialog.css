@@ -1,0 +1,5 @@
+.MuiDialog-paperWidthSm {
+  max-width: none !important;
+  width: 80%;
+  height: 80%;
+}
