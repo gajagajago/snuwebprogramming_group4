@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import firebase from './firebase';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 import purple from '@material-ui/core/colors/purple';
 
 import './custom.scss';
@@ -20,7 +20,7 @@ const App = () => {
   const [user, setUser] = useState();
   const theme = createMuiTheme({
     palette: {
-      primary: blue,
+      primary: blueGrey,
       secondary: purple,
     },
     status: {
