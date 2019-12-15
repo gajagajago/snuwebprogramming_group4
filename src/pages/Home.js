@@ -39,7 +39,7 @@ const Home = (props) => {
       {
         props.user &&
         <div className="d-flex">
-          <Link to="/mycalendar"><Button color="blue" className="mr-2">메인으로</Button></Link>
+          <Link to="/mycalendar"><Button color="blueGrey" className="mr-2">메인으로</Button></Link>
           <Button color="dark" onClick={logout}>로그아웃</Button>
         </div>
       }
