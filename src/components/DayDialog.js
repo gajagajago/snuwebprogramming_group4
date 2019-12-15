@@ -64,7 +64,7 @@ const DayDialog = (props) => {
             <Selfie date={date} host={host} mine={mine} />
           </TabPane>
           <TabPane tabId="photo">
-            <Photo />
+            <Photo date={date} host={host} mine={mine} />
           </TabPane>
           <TabPane tabId="schedule">
             <Schedule />

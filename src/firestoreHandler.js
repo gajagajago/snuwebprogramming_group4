@@ -113,6 +113,41 @@ const deleteSelfie = async (uid, imageName, docId) => {
   })
 }
 
+const getPhotosByDate = async (uid, date) => {
+  const result = await db.collection('photo')
+  .where('date', '==', date)
+  .where('uid', '==', uid)
+  .get();
+  if (!result.empty) {
+    return result.docs.map((element) => {
+      const data = element.data();
+      data.id = element.id;
+      return data;
+    });
+  }
+  return null;
+}
+
+const addPhoto = async (uid, date, file) => {
+  const ref = firebase.storage().ref();
+  const task = ref.child(`${uid}/photo/${file.name}`).put(file, { contentType: file.type });
+  const snapshot = await task;
+  const url = await snapshot.ref.getDownloadURL();
+  await db.collection('photo').add({
+    uid,
+    date,
+    imageName: file.name,
+    imageUrl: url,
+  });
+}
+
+const deletePhoto = async (uid, imageName, docId) => {
+  const ref = firebase.storage().ref();
+  const fileRef = ref.child(`${uid}/photo/${imageName}`);
+  await fileRef.delete();
+  await db.collection('photo').doc(docId).delete();
+}
+
 export default {
   getDiaryByDate,
   addDiary,
@@ -126,4 +161,8 @@ export default {
   getSelfieByDate,
   addSelfie,
   deleteSelfie,
+
+  getPhotosByDate,
+  addPhoto,
+  deletePhoto,
 }
