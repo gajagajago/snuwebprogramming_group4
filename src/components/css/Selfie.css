@@ -1,6 +1,13 @@
 input {
   width: 100px;
 }
-img {
-  height: 80%;
+#selfie-image {
+  height: 400px;
+  width: auto;
+}
+#selfie-input {
+  display: none;
+}
+#selfie-add-button {
+  cursor: pointer;
 }
