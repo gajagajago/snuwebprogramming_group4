@@ -2,6 +2,8 @@ import React from 'react';
 import { Spinner, Button } from 'reactstrap';
 import RecordRTC from 'recordrtc';
 
+import './css/Diary.css';
+
 const Diary = () => {
   const [recorder, setRecorder] = React.useState();
   const [text, setText] = React.useState();
@@ -48,9 +50,7 @@ const Diary = () => {
     });
   }
   return (
-    <div>
-      <Button color="dark" onClick={startRecord}>다이어리 작성</Button>
-      <Button color="dark" onClick={stopRecord}>작성 완료</Button>
+    <div className="d-flex w-100 h-100 flex-column px-3 py-3">
       {
         spinner &&
         <div>
@@ -59,8 +59,13 @@ const Diary = () => {
         </div>
       }
       { !spinner &&
-        <div>{text}</div>
+        <textarea type="text/javasript" className="w-100" id="diary" onChange={(e) => { setText(e.target.value) }} value={text}></textarea>
       }
+      <div className="d-flex justify-content-end mt-2">
+        <Button color="blue" onClick={startRecord} className="mr-1">Start Recording</Button>
+        <Button color="blue" onClick={stopRecord} className="mr-1">Stop Recording</Button>
+        <Button color="brown" >Save</Button>
+      </div>
     </div>
   )
 }
