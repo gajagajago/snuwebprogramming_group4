@@ -78,7 +78,7 @@ const deleteSchedule = async (docId) => {
 }
 
 const doneSchedule = async (docId) => {
-  await db.collection('shcedule').doc(docId).update({
+  await db.collection('schedule').doc(docId).update({
     done: true,
   });
 }
@@ -164,6 +164,7 @@ export default {
   getScheduleByDate,
   addSchedule,
   deleteSchedule,
+  doneSchedule,
 
   getSelfieByDate,
   addSelfie,
