@@ -66,11 +66,18 @@ const addSchedule = async (uid, date, content) => {
     uid,
     date,
     content,
+    done: false,
   });
 }
 
 const deleteSchedule = async (docId) => {
   await db.collection('schedule').doc(docId).delete();
+}
+
+const doneSchedule = async (docId) => {
+  await db.collection('shcedule').doc(docId).update({
+    done: true,
+  });
 }
 
 const getSelfieByDate = async (uid, date) => {
