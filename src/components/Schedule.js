@@ -2,10 +2,12 @@ import React from 'react';
 import {Button, Input} from 'reactstrap';
 import Checkbox from '@material-ui/core/Checkbox';
 import firestoreHandler from '../firestoreHandler';
-const Schedule = ({ date, host, mine}) => {
+import './css/Schedule.css';
+
+const Schedule = ({date, host, mine}) => {
   const [schedule, setSchedule] = React.useState('');
   const [scheduleList, setScheduleList] = React.useState([]);
-
+  
   const fetchSchedule = async () => {
     const data = await firestoreHandler.getScheduleByDate(host, date);
     console.log(data);
@@ -34,8 +36,7 @@ const Schedule = ({ date, host, mine}) => {
       await firestoreHandler.doneSchedule(docId);
     } else {
       await firestoreHandler.undoSchedule(docId);
-    }
-      await fetchSchedule();
+    } await fetchSchedule();
   }
 
   const handleKeyEvent = (e) => {
@@ -53,18 +54,28 @@ const Schedule = ({ date, host, mine}) => {
   return (
     <div>
       <div className="d-flex align-items-center">
-        <Input id = "inputText" placeholder="add your task" className="w-70" onKeyPress={handleKeyEvent}
-        type="text" onChange={(e) => setSchedule(e.target.value)} value={schedule}></Input>
-        <div><Button color="blue" onClick={addSchedule}> add </Button></div>
+        <Input id ="inputText" placeholder="add your task" 
+          className="w-70" onKeyPress={handleKeyEvent}
+          type="text" onChange={(e) => setSchedule(e.target.value)} 
+          value={schedule}>
+        </Input>
+        <div> 
+          <Button color="blue" onClick={addSchedule}> add </Button>
+        </div>
       </div>
       <div>{
         scheduleList.map((element) => {
+          let check = (element.done === true) ? 'true' : 'false'
+          console.log(check)
           return (
             <div className = "w-100 d-flex align-items-center justify-content-between" key={element.id}>
-              <div className="d-flex align-items-center">
-                <Checkbox onChange={() => doneChange(element.id, element.done)} checked={element.done} color="primary" 
-                  inputProps={{ 'aria-label': 'secondary checkbox' }}/>              
-                <div>{element.content}</div>
+              <div className= "d-flex align-items-center">
+                <Checkbox onChange={() => doneChange(element.id, element.done)} 
+                  checked={element.done} color="primary" 
+                  inputProps={{'aria-label': 'secondary checkbox'}}/>              
+                <div id = {check}> 
+                  {element.content}
+                </div>
               </div>
               <Button color="yellow" onClick={() => deleteSchedule(element.id)}>delete</Button>
             </div>
