@@ -3,12 +3,21 @@ import { Spinner, Button } from 'reactstrap';
 import RecordRTC from 'recordrtc';
 
 import './css/Diary.css';
+import firestoreHandler from '../firestoreHandler';
 
-const Diary = () => {
+const Diary = ({ host, date, mine}) => {
   const [recorder, setRecorder] = React.useState();
+  const [diaryData, setDiaryData] = React.useState();
   const [text, setText] = React.useState();
   const [spinner, setSpinner] = React.useState(false);
   const [status, setStatus] = React.useState('');
+  const fetchDiaryData = async () => {
+    const data = await firestoreHandler.getDiaryByDate(host, date);
+    if (data) {
+      setDiaryData(data);
+      setText(data[0].content);
+    }
+  };
   const stt = async (blob) => {
     const clientId = 'c5cgt7y1jj';
     const clientSecret = '4giwRMopxVDhA3Rv3Bnayizkd7vs8JDNnfLpMWQO';
@@ -49,6 +58,20 @@ const Diary = () => {
       setSpinner(false);
     });
   }
+  // save 
+  const addDiary = async () => {
+    if (diaryData) {
+      await firestoreHandler.deleteDiary(diaryData[0].id);
+    }
+    await firestoreHandler.addDiary(host, date, text)
+    await fetchDiaryData();
+    alert('저장되었습니다');
+  }
+
+  React.useEffect(() => {
+    fetchDiaryData();
+  }, [])
+  
   return (
     <div className="d-flex w-100 h-100 flex-column px-3 py-3">
       {
@@ -64,7 +87,7 @@ const Diary = () => {
       <div className="d-flex justify-content-end mt-2">
         <Button color="blue" onClick={startRecord} className="mr-1">Start Recording</Button>
         <Button color="blue" onClick={stopRecord} className="mr-1">Stop Recording</Button>
-        <Button color="brown" >Save</Button>
+        <Button color="brown" onClick={addDiary} >Save</Button>
       </div>
     </div>
   )
