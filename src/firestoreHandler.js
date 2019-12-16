@@ -17,6 +17,21 @@ const checkUser = async (uid, email, name) => {
   }
 }
 
+const searchUserByEmail = async (email) => {
+  const result = await db.collection('user')
+  .where('email', '==', email)
+  .get();
+  if (!result.empty) {
+    return result.docs.map((element) => {
+      const data = element.data();
+      data.id = element.id;
+      return data;
+    });
+  } else {
+    return null;
+  }
+}
+
 const getDiaryByDate = async (uid, date) => {
   const result = await db.collection('diary')
   .where('date', '==', date)
@@ -175,6 +190,7 @@ const deletePhoto = async (uid, imageName, docId) => {
 
 export default {
   checkUser,
+  searchUserByEmail,
 
   getDiaryByDate,
   addDiary,

@@ -1,21 +1,58 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Typography, IconButton, Drawer, Divider, List, ListItem, ListItemText } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+} from 'reactstrap';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import './css/MainLayout.css'
+import firestoreHandler from '../firestoreHandler';
 
 const Layout = () => {
   const [open, setOpen] = useState(false);
+  const [showAddFriendModal, setShowAddFriendModal] = useState(false);
+  const [searchEmail, setSearchEmail] = useState('');
   const openDrawer = () => {
     setOpen(true);
   }
   const closeDrawer = () => {
     setOpen(false);
   }
+  const searchByEmail = async () => {
+    const result = await firestoreHandler.searchUserByEmail(searchEmail);
+    console.log(result);
+  }
   return (
     <div>
+      <Modal isOpen={showAddFriendModal} toggle={() => setShowAddFriendModal(!showAddFriendModal)}>
+        <ModalHeader toggle={() => setShowAddFriendModal(!showAddFriendModal)}>친구 추가</ModalHeader>
+        <ModalBody>
+          <div className="d-flex">
+            <Input type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)}></Input>
+            <Button color="blueGrey" onClick={searchByEmail}>검색</Button>
+          </div>
+        </ModalBody>
+        {/* <ModalFooter>
+          <Button color=
+        </ModalFooter> */}
+      </Modal>
       <AppBar position="static" color="primary">
         <Toolbar variant="dense" color="primary">
           <IconButton
@@ -51,8 +88,11 @@ const Layout = () => {
               <ListItemText primary={"내 캘린더"} />
             </ListItem>
             <div className="d-flex flex-column w-100 mt-3">
-              <span className="h5 px-3">친구 목록</span>
-              <ListItem button className="pl-5">
+              <div className="d-flex justify-content-between align-items-center px-3">
+                <div id="friend-list-title">친구 목록</div>
+                <Button color="blueGrey" size="sm" onClick={() => { setOpen(false); setShowAddFriendModal(true); } }>친구 추가</Button>
+              </div>
+              <ListItem button className="pl-4">
                 <ListItemText primary={"친구1"} />
               </ListItem>
             </div>
