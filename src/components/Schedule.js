@@ -16,28 +16,28 @@ const Schedule = ({date, host, mine}) => {
       setScheduleList([]);
     }
   }
-
   const addSchedule = async () => {
-    if(schedule !== '') {
+    if(schedule !== '' && mine) {
       await firestoreHandler.addSchedule(host, date, schedule);
       await fetchSchedule();
       setSchedule('');
     }
   }
-
   const deleteSchedule = async (docId) => {
-    await firestoreHandler.deleteSchedule(docId);
-    await fetchSchedule();
+    if(mine) {
+      await firestoreHandler.deleteSchedule(docId);
+      await fetchSchedule();
+    }
   }
-
   const doneChange = async (docId, done) => {
-    if(done === false) {
-      await firestoreHandler.doneSchedule(docId);
-    } else {
-      await firestoreHandler.undoSchedule(docId);
-    } await fetchSchedule();
+    if(mine) {
+      if(done === false) {
+        await firestoreHandler.doneSchedule(docId);
+      } else {
+        await firestoreHandler.undoSchedule(docId);
+      } await fetchSchedule();
+    }
   }
-
   const handleKeyEvent = (e) => {
     if(window.event.keyCode === 13) {
       if(e.target.value.trim() === '')
@@ -45,11 +45,10 @@ const Schedule = ({date, host, mine}) => {
       addSchedule();
     }
   }
-
   React.useEffect(() => {
     fetchSchedule();
   }, [])
-
+  
   return (
     <div>
       <div className="d-flex align-items-center">
