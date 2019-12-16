@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import RecordRTC from 'recordrtc';
 
 import './css/Diary.css';
@@ -9,13 +9,16 @@ const Diary = ({ host, date, mine}) => {
   const [recorder, setRecorder] = React.useState();
   const [diaryData, setDiaryData] = React.useState();
   const [text, setText] = React.useState();
-  const [spinner, setSpinner] = React.useState(false);
   const [status, setStatus] = React.useState('');
+  const [show, setShow] = React.useState();
+
   const fetchDiaryData = async () => {
     const data = await firestoreHandler.getDiaryByDate(host, date);
     if (data) {
       setDiaryData(data);
       setText(data[0].content);
+    } else {
+      setDiaryData();
     }
   };
   const stt = async (blob) => {
@@ -39,8 +42,7 @@ const Diary = ({ host, date, mine}) => {
       const tempRecorder = RecordRTC(stream, {
         type: 'video'
       });
-      setSpinner(true);
-      setStatus('recording your diary');
+      setStatus('녹음중...');
       tempRecorder.startRecording();
       setRecorder(tempRecorder);
     }
@@ -52,29 +54,88 @@ const Diary = ({ host, date, mine}) => {
   const stopRecord = () => {
     recorder.stopRecording(async () => {
       let blob = recorder.getBlob();
-      setStatus('saving your diary');
+      setStatus('음성 해석중...');
       await stt(blob);
       setStatus('');
-      setSpinner(false);
     });
   }
-  // save 
+  
   const addDiary = async () => {
-    if (diaryData) {
-      await firestoreHandler.deleteDiary(diaryData[0].id);
-    }
     await firestoreHandler.addDiary(host, date, text)
     await fetchDiaryData();
-    alert('저장되었습니다');
+  }
+
+  const deleteDiary = async () => {
+    await firestoreHandler.deleteDiary(diaryData[0].id);
+    await fetchDiaryData();
   }
 
   React.useEffect(() => {
     fetchDiaryData();
   }, [])
+
+  React.useEffect(() => {
+    if (mine) {
+      if (diaryData) {
+        setShow('editableDiaryPage');
+      } else {
+        setShow('addDiaryPage');
+      }
+    } else {
+      if (diaryData) {
+        setShow('uneditableDiaryPage');
+      } else {
+        setShow('noDataPage')
+      }
+    }
+  }, [mine, diaryData]);
   
   return (
     <div className="d-flex w-100 h-100 flex-column px-3 py-3">
       {
+        show === 'editableDiaryPage' && diaryData &&
+        <div className="w-100 h-100 d-flex flex-column">
+          <div id="diary" className="border px-2 py-2 mb-2">
+            {diaryData[0].content}
+          </div>
+          <div className="d-flex justify-content-center">
+            <Button color="red" onClick={deleteDiary}>다시 작성하기</Button>
+          </div>
+        </div>
+      }
+      {
+        show === 'addDiaryPage' &&
+        <div className="d-flex w-100 h-100 flex-column">
+          {
+            status === '' &&
+            <textarea type="text" className="w-100" id="diary" onChange={(e) => { setText(e.target.value) }} value={text}></textarea>
+          }
+          {
+            status !== '' &&
+            <div className="w-100 d-flex justify-content-center align-items-center h4" id="status">{status}</div>
+          }
+          <div className="d-flex justify-content-end mt-2">
+            <Button color="blue" onClick={startRecord} className="mr-1">Start Recording</Button>
+            <Button color="blue" onClick={stopRecord} className="mr-1">Stop Recording</Button>
+            <Button color="brown" onClick={addDiary} >Save</Button>
+          </div>
+        </div>
+      }
+      {
+        show === 'uneditableDiaryPage' && diaryData &&
+        <div className="w-100 h-100 d-flex flex-column">
+          <div className="2-100 h-100 border px-2 py-2 mb-2">
+            {diaryData[0].content}
+          </div>
+        </div>
+      }
+      {
+        show === 'noDataPage' &&
+        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+          <span className="h4">등록된 Diary가 없습니다.</span>
+        </div>
+      }
+      {/* {
         spinner &&
         <div>
           <div>{status}</div>
@@ -82,13 +143,13 @@ const Diary = ({ host, date, mine}) => {
         </div>
       }
       { !spinner &&
-        <textarea type="text/javasript" className="w-100" id="diary" onChange={(e) => { setText(e.target.value) }} value={text}></textarea>
+        <textarea type="text" className="w-100" id="diary" onChange={(e) => { setText(e.target.value) }} value={text}></textarea>
       }
       <div className="d-flex justify-content-end mt-2">
         <Button color="blue" onClick={startRecord} className="mr-1">Start Recording</Button>
         <Button color="blue" onClick={stopRecord} className="mr-1">Stop Recording</Button>
         <Button color="brown" onClick={addDiary} >Save</Button>
-      </div>
+      </div> */}
     </div>
   )
 }

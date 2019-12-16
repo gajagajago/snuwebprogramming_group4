@@ -1,3 +1,6 @@
 #diary {
-    height: calc(100% - 45px);
+  height: calc(100% - 45px);
+}
+#status {
+  height: calc(100% - 45px);
 }

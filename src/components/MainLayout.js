@@ -148,7 +148,7 @@ const Layout = (props) => {
             <div className="d-flex flex-column w-100 mt-3">
               <div className="d-flex justify-content-between align-items-center px-3">
                 <div id="friend-list-title">팔로잉</div>
-                <Button color="blueGrey" size="sm" onClick={() => {
+                <Button className="my-1" color="blueGrey" size="sm" onClick={() => {
                   setSearchEmail('');
                   setSearchedUser();
                   setOpen(false); setShowAddFriendModal(true);
