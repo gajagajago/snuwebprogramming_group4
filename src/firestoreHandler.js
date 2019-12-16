@@ -18,11 +18,8 @@ const checkUser = async (uid, email, name) => {
 }
 
 const getDiaryByDate = async (uid, date) => {
-  const start = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-1`);
-  const end = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-31`);
-  const result = await db.collection('schedule')
-  .where('date', '>=', start)
-  .where('date', '<=', end)
+  const result = await db.collection('diary')
+  .where('date', '==', date)
   .where('uid', '==', uid)
   .get();
   if (!result.empty) {
@@ -35,15 +32,15 @@ const getDiaryByDate = async (uid, date) => {
   return null;
 }
 const addDiary = async (uid, date, content) => {
-  await db.collection('schedule').add({
+  await db.collection('diary').add({
     uid,
     date,
-    content,
+    content
   });
 }
 
 const deleteDiary = async (docId) => {
-  await db.collection('selfie').doc(docId).delete();
+  await db.collection('diary').doc(docId).delete();
 }
 
 const getScheduleByMonth = async (uid, date) => {
@@ -93,8 +90,14 @@ const deleteSchedule = async (docId) => {
 }
 
 const doneSchedule = async (docId) => {
-  await db.collection('shcedule').doc(docId).update({
+  await db.collection('schedule').doc(docId).update({
     done: true,
+  });
+}
+
+const undoSchedule = async (docId) => {
+  await db.collection('schedule').doc(docId).update({
+    done: false,
   });
 }
 
@@ -181,6 +184,8 @@ export default {
   getScheduleByDate,
   addSchedule,
   deleteSchedule,
+  doneSchedule,
+  undoSchedule,
 
   getSelfieByDate,
   addSelfie,

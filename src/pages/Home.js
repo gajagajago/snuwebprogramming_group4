@@ -25,7 +25,7 @@ const Home = (props) => {
     <div id="home" className="d-flex flex-column justify-content-center align-items-center">
       <Fade in={true}>
         <h1>
-          저세상 캘린더
+          저세상 캘린더 우와아아아아ㅏ아
         </h1>
       </Fade>
       {
