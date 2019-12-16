@@ -2,6 +2,21 @@ import firebase from './firebase';
 
 const db = firebase.firestore();
 
+const checkUser = async (uid, email, name) => {
+  const result = await db.collection('user')
+  .where('uid', '==', uid)
+  .get();
+  if (!result.empty) {
+    return;
+  } else {
+    await db.collection('user').add({
+      uid,
+      email,
+      name,
+    });
+  }
+}
+
 const getDiaryByDate = async (uid, date) => {
   const start = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-1`);
   const end = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-31`);
@@ -156,6 +171,8 @@ const deletePhoto = async (uid, imageName, docId) => {
 }
 
 export default {
+  checkUser,
+
   getDiaryByDate,
   addDiary,
   deleteDiary,

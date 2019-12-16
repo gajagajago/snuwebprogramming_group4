@@ -50,9 +50,12 @@ const Layout = () => {
             <ListItem button component={Link} to="/mycalendar" onClick={closeDrawer} selected={window.location.pathname === '/mycalendar'}>
               <ListItemText primary={"내 캘린더"} />
             </ListItem>
-            <ListItem button component={Link} to="/friends" onClick={closeDrawer} selected={window.location.pathname === '/friends'}>
-              <ListItemText primary={"친구"} />
-            </ListItem>
+            <div className="d-flex flex-column w-100 mt-3">
+              <span className="h5 px-3">친구 목록</span>
+              <ListItem button className="pl-5">
+                <ListItemText primary={"친구1"} />
+              </ListItem>
+            </div>
           </List>
         </div>
       </Drawer>
