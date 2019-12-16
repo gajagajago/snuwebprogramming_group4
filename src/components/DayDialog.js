@@ -58,7 +58,7 @@ const DayDialog = (props) => {
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId="diary">
-            <Diary />
+            <Diary date={date} host={host} mine={mine} />
           </TabPane>
           <TabPane tabId="selfie">
             <Selfie date={date} host={host} mine={mine} />
