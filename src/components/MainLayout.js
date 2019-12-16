@@ -80,7 +80,10 @@ const Layout = (props) => {
         <ModalBody>
           <div className="d-flex flex-column">
             <InputGroup>
-              <Input type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)} onKeyPress={(e) => { if (e.charCode === 13 ) { searchByEmail(); } }}></Input>
+              <Input type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)}
+                placeholder="이메일로 검색"
+                onKeyPress={(e) => { if (e.charCode === 13 ) { searchByEmail(); } }}
+              />
               <InputGroupAddon addonType="append">
                 <Button color="blueGrey" onClick={searchByEmail}>검색</Button>
               </InputGroupAddon>
