@@ -5,6 +5,7 @@ import firestoreHandler from '../firestoreHandler';
 const Schedule = ({ date, host, mine}) => {
   const [schedule, setSchedule] = React.useState('');
   const [scheduleList, setScheduleList] = React.useState([]);
+
   const fetchSchedule = async () => {
     const data = await firestoreHandler.getScheduleByDate(host, date);
     console.log(data);
@@ -28,13 +29,17 @@ const Schedule = ({ date, host, mine}) => {
     await fetchSchedule();
   }
 
-  const doneChange = async (docId) => {
-    await firestoreHandler.doneSchedule(docId);
-    await fetchSchedule();
+  const doneChange = async (docId, done) => {
+    if(done === false) {
+      await firestoreHandler.doneSchedule(docId);
+    } else {
+      await firestoreHandler.undoSchedule(docId);
+    }
+      await fetchSchedule();
   }
 
   const handleKeyEvent = (e) => {
-    if(window.event.keyCode == 13) {
+    if(window.event.keyCode === 13) {
       if(e.target.value.trim() === '')
         { return }
       addSchedule();
@@ -57,7 +62,7 @@ const Schedule = ({ date, host, mine}) => {
           return (
             <div className = "w-100 d-flex align-items-center justify-content-between" key={element.id}>
               <div className="d-flex align-items-center">
-                <Checkbox onChange={() => doneChange(element.id)} checked={element.done} color="primary" 
+                <Checkbox onChange={() => doneChange(element.id, element.done)} checked={element.done} color="primary" 
                   inputProps={{ 'aria-label': 'secondary checkbox' }}/>              
                 <div>{element.content}</div>
               </div>

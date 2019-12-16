@@ -80,6 +80,12 @@ const doneSchedule = async (docId) => {
   });
 }
 
+const undoSchedule = async (docId) => {
+  await db.collection('schedule').doc(docId).update({
+    done: false,
+  });
+}
+
 const getSelfieByDate = async (uid, date) => {
   const result = await db.collection('selfie')
   .where('date', '==', date)
@@ -162,6 +168,7 @@ export default {
   addSchedule,
   deleteSchedule,
   doneSchedule,
+  undoSchedule,
 
   getSelfieByDate,
   addSelfie,
