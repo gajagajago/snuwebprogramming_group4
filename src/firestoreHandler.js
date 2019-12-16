@@ -17,6 +17,17 @@ const checkUser = async (uid, email, name) => {
   }
 }
 
+const getUser = async (uid) => {
+  const result = await db.collection('user')
+  .where('uid', '==', uid)
+  .get();
+  if (!result.empty) {
+    return result.docs.map(element => element.data());
+  } else {
+    return null;
+  }
+}
+
 const searchUserByEmail = async (email) => {
   const result = await db.collection('user')
   .where('email', '==', email)
@@ -30,6 +41,27 @@ const searchUserByEmail = async (email) => {
   } else {
     return null;
   }
+}
+
+const addFollow = async (follower, following) => {
+  await db.collection('follow').add({
+    follower,
+    following,
+  });
+}
+
+const getFollowing = async (uid) => {
+  const result = await db.collection('follow')
+  .where('follower', '==', uid)
+  .get();
+  if (!result.empty) {
+    return result.docs.map((element) => {
+      const data = element.data();
+      data.id = element.id;
+      return data;
+    });
+  }
+  return null;
 }
 
 const getDiaryByDate = async (uid, date) => {
@@ -190,7 +222,10 @@ const deletePhoto = async (uid, imageName, docId) => {
 
 export default {
   checkUser,
+  getUser,
   searchUserByEmail,
+  addFollow,
+  getFollowing,
 
   getDiaryByDate,
   addDiary,

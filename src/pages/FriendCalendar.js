@@ -1,16 +1,29 @@
 import React from 'react';
 import MainLayout from '../components/MainLayout';
 import Calendar from '../components/Calendar';
+import {
+  useParams
+} from "react-router-dom";
+import firestoreHandler from '../firestoreHandler';
 
 import { Row, Col } from 'reactstrap';
 import './css/MyCalendar.css';
 
-const MyCalendar = (props) => {
+const FriendCalendar = (props) => {
+  const { uid } = useParams();
+  const [hostOfCalendar, setHostOfCalendar] = React.useState('');
+  const fetchHost = async () => {
+    const data = await firestoreHandler.getUser(uid);
+    setHostOfCalendar(data[0].name);
+  }
+  React.useEffect(() => {
+    fetchHost();
+  }, [])
   return (
     <div className="h-100">
       {
         props.user &&
-        <MainLayout user={props.user} title='내 캘린더' />
+        <MainLayout user={props.user} title={`${hostOfCalendar}님의 캘린더`} />
       }
       <div id="mycalendar-container">
         <Row noGutters className="h-100">
@@ -18,7 +31,7 @@ const MyCalendar = (props) => {
           <Col className="d-flex align-items-center">
             {
               props.user &&
-              <Calendar user={props.user} host={props.user.uid} mine={true} />
+              <Calendar user={props.user} host={uid} mine={false} />
             }
           </Col>
           <Col xl="3" lg="3" md="2" sm="1" xs="0" />
@@ -28,4 +41,4 @@ const MyCalendar = (props) => {
   )
 }
 
-export default MyCalendar;
+export default FriendCalendar;
