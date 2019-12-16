@@ -53,9 +53,15 @@ const Selfie = ({date, host, mine}) => {
   React.useEffect(() => {
     if (mine) {
       if (selfieData) {
-        setShow('showSelfiePage');
+        setShow('editableSelfiePage');
       } else {
         setShow('addButtonPage');
+      }
+    } else {
+      if (selfieData) {
+        setShow('uneditableSelfiePage');
+      } else {
+        setShow('noDataPage')
       }
     }
   }, [mine, selfieData]);
@@ -63,7 +69,7 @@ const Selfie = ({date, host, mine}) => {
     <div className="h-100 d-flex">
       <Input id="selfie-input" type="file" onChange={handleChange} />
       {
-        show === 'showSelfiePage' &&
+        show === 'editableSelfiePage' &&
         <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
           <img id="selfie-image" src={selfieData ? selfieData.imageUrl : ''} alt="selfie" />
           <span className="h4 mb-3">{selfieData && selfieData.face ? selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
@@ -85,6 +91,19 @@ const Selfie = ({date, host, mine}) => {
               }
             </div>
           </label>
+        </div>
+      }
+      {
+        show === 'uneditableSelfiePage' &&
+        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+          <img id="selfie-image" src={selfieData ? selfieData.imageUrl : ''} alt="selfie" />
+          <span className="h4 mb-3">{selfieData && selfieData.face ? selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
+        </div>
+      }
+      {
+        show === 'noDataPage' &&
+        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+          <span className="h4">등록된 Selfie가 없습니다.</span>
         </div>
       }
     </div>

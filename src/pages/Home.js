@@ -8,6 +8,7 @@ import {
   Link,
 } from 'react-router-dom';
 import firebase from '../firebase';
+import firestoreHandler from '../firestoreHandler';
 
 const Home = (props) => {
   const googleLogin = async () => {
@@ -16,6 +17,9 @@ const Home = (props) => {
   }
   const logout = async () => {
     firebase.auth().signOut();
+  }
+  const checkUser = async () => {
+    firestoreHandler.checkUser(props.user.uid, props.user.email, props.user.displayName);
   }
   return (
     <div id="home" className="d-flex flex-column justify-content-center align-items-center">
@@ -39,7 +43,7 @@ const Home = (props) => {
       {
         props.user &&
         <div className="d-flex">
-          <Link to="/mycalendar"><Button color="blueGrey" className="mr-2">메인으로</Button></Link>
+          <Link to="/mycalendar"><Button color="blueGrey" className="mr-2" onClick={checkUser}>메인으로</Button></Link>
           <Button color="dark" onClick={logout}>로그아웃</Button>
         </div>
       }

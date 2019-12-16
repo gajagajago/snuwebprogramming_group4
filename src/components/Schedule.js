@@ -10,7 +10,6 @@ const Schedule = ({date, host, mine}) => {
   
   const fetchSchedule = async () => {
     const data = await firestoreHandler.getScheduleByDate(host, date);
-    console.log(data);
     if (data) {
       setScheduleList(data);
     } else {

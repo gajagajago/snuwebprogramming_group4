@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  useRouteMatch,
 } from "react-router-dom";
 import firebase from './firebase';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -14,9 +15,10 @@ import './App.css';
 
 import Home from './pages/Home';
 import MyCalendar from './pages/MyCalendar';
-import Friends from './pages/Friends';
+import FriendCalendar from './pages/FriendCalendar';
 
 const App = () => {
+  // const match = useRouteMatch();
   const [user, setUser] = useState();
   const theme = createMuiTheme({
     palette: {
@@ -44,8 +46,8 @@ const App = () => {
             <Route path="/mycalendar">
               <MyCalendar user={user} />
             </Route>
-            <Route path="/friends">
-              <Friends user={user} />
+            <Route path="/friendcalendar/:uid">
+              <FriendCalendar user={user} />
             </Route>
             <Route path="/">
               <Home user={user} setUser={setUser} />
