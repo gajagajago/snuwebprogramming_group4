@@ -5,7 +5,6 @@ import {
   useParams,
 } from 'react-router-dom';
 import firestoreHandler from '../firestoreHandler';
-
 import {Row, Col} from 'reactstrap';
 import './css/MyCalendar.css';
 import PropTypes from 'prop-types';

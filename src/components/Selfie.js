@@ -5,7 +5,7 @@ import {
   Input,
 } from 'reactstrap';
 import './css/Selfie.css';
-
+import PropTypes from 'prop-types';
 import firestoreHandler from '../firestoreHandler';
 
 const Selfie = ({date, host, mine}) => {
@@ -44,7 +44,8 @@ const Selfie = ({date, host, mine}) => {
     setUploading(false);
   };
   const deleteSelfie = async () => {
-    await firestoreHandler.deleteSelfie(host, selfieData.imageName, selfieData.id);
+    await firestoreHandler.deleteSelfie(
+        host, selfieData.imageName, selfieData.id);
     setSelfieData();
   };
   React.useEffect(() => {
@@ -117,6 +118,12 @@ const Selfie = ({date, host, mine}) => {
       }
     </div>
   );
+};
+
+Selfie.propTypes = {
+  date: PropTypes.any,
+  host: PropTypes.string.isRequired,
+  mine: PropTypes.bool.isRequired,
 };
 
 export default Selfie;

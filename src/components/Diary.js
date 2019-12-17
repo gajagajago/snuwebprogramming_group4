@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button} from 'reactstrap';
 import RecordRTC from 'recordrtc';
-
 import './css/Diary.css';
 import firestoreHandler from '../firestoreHandler';
+import PropTypes from 'prop-types';
 
 const Diary = ({host, date, mine}) => {
   const [recorder, setRecorder] = React.useState();
@@ -39,6 +39,7 @@ const Diary = ({host, date, mine}) => {
   };
   const startRecord = () => {
     const success = async (stream) => {
+      // eslint-disable-next-line
       const tempRecorder = RecordRTC(stream, {
         type: 'video',
       });
@@ -60,7 +61,7 @@ const Diary = ({host, date, mine}) => {
     });
   };
   const addDiary = async () => {
-    await firestoreHandler.addDiary(host, date, text)
+    await firestoreHandler.addDiary(host, date, text);
     await fetchDiaryData();
   };
 
@@ -152,6 +153,12 @@ const Diary = ({host, date, mine}) => {
       }
     </div>
   );
+};
+
+Diary.propTypes = {
+  date: PropTypes.any,
+  host: PropTypes.string.isRequired,
+  mine: PropTypes.bool.isRequired,
 };
 
 export default Diary;

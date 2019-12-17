@@ -1,9 +1,9 @@
 import React from 'react';
 import MainLayout from '../components/MainLayout';
 import Calendar from '../components/Calendar';
-
-import { Row, Col } from 'reactstrap';
+import {Row, Col} from 'reactstrap';
 import './css/MyCalendar.css';
+import PropTypes from 'prop-types';
 
 const MyCalendar = (props) => {
   return (
@@ -25,7 +25,15 @@ const MyCalendar = (props) => {
         </Row>
       </div>
     </div>
-  )
-}
+  );
+};
+
+MyCalendar.propTypes = {
+  user: PropTypes.shape({
+    uid: PropTypes.string,
+    email: PropTypes.string,
+    displayName: PropTypes.string,
+  }).isRequired,
+};
 
 export default MyCalendar;
