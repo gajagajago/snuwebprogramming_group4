@@ -4,20 +4,21 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import firebase from './firebase';
+
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import purple from '@material-ui/core/colors/purple';
-
-import './custom.scss';
-import './App.css';
 
 import Home from './pages/Home';
 import MyCalendar from './pages/MyCalendar';
 import FriendCalendar from './pages/FriendCalendar';
 
+import firebase from './modules/firebase';
+
+import './custom.scss';
+import './App.css';
+
 const App = () => {
-  // const match = useRouteMatch();
   const [user, setUser] = useState();
   const theme = createMuiTheme({
     palette: {
@@ -43,10 +44,16 @@ const App = () => {
         <div id="app">
           <Switch>
             <Route path="/mycalendar">
-              <MyCalendar user={user} />
+              {
+                user &&
+                <MyCalendar user={user} />
+              }
             </Route>
             <Route path="/friendcalendar/:uid">
-              <FriendCalendar user={user} />
+              {
+                user &&
+                <FriendCalendar user={user} />
+              }
             </Route>
             <Route path="/">
               <Home user={user} setUser={setUser} />

@@ -1,9 +1,14 @@
 import React from 'react';
-import {Button} from 'reactstrap';
-import RecordRTC from 'recordrtc';
-import './css/Diary.css';
-import firestoreHandler from '../firestoreHandler';
 import PropTypes from 'prop-types';
+
+import RecordRTC from 'recordrtc';
+
+import {Button} from 'reactstrap';
+
+import firebaseHandler from '../modules/firebaseHandler';
+import naverAPIHandler from '../modules/naverAPIHandler';
+
+import './css/Diary.css';
 
 const Diary = ({host, date, mine}) => {
   const [recorder, setRecorder] = React.useState();
@@ -13,29 +18,13 @@ const Diary = ({host, date, mine}) => {
   const [show, setShow] = React.useState();
 
   const fetchDiaryData = async () => {
-    const data = await firestoreHandler.getDiaryByDate(host, date);
+    const data = await firebaseHandler.getDiaryByDate(host, date);
     if (data) {
       setDiaryData(data);
-      setText(data[0].content);
+      setText(data.content);
     } else {
       setDiaryData();
     }
-  };
-  const stt = async (blob) => {
-    const clientId = 'c5cgt7y1jj';
-    const clientSecret = '4giwRMopxVDhA3Rv3Bnayizkd7vs8JDNnfLpMWQO';
-    const url = `https://cors-anywhere.herokuapp.com/https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=Kor`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-        'X-NCP-APIGW-API-KEY-ID': clientId,
-        'X-NCP-APIGW-API-KEY': clientSecret,
-      },
-      body: blob,
-    });
-    const data = await response.json();
-    setText(data.text);
   };
   const startRecord = () => {
     const success = async (stream) => {
@@ -56,17 +45,18 @@ const Diary = ({host, date, mine}) => {
     recorder.stopRecording(async () => {
       const blob = recorder.getBlob();
       setStatus('음성 해석중...');
-      await stt(blob);
+      const text = await naverAPIHandler.stt(blob);
+      setText(text);
       setStatus('');
     });
   };
   const addDiary = async () => {
-    await firestoreHandler.addDiary(host, date, text);
+    await firebaseHandler.addDiary(host, date, text);
     await fetchDiaryData();
   };
 
   const deleteDiary = async () => {
-    await firestoreHandler.deleteDiary(diaryData[0].id);
+    await firebaseHandler.deleteDiary(diaryData.id);
     await fetchDiaryData();
   };
 
@@ -77,25 +67,25 @@ const Diary = ({host, date, mine}) => {
   React.useEffect(() => {
     if (mine) {
       if (diaryData) {
-        setShow('editableDiaryPage');
+        setShow('myDiary');
       } else {
-        setShow('addDiaryPage');
+        setShow('addDiary');
       }
     } else {
       if (diaryData) {
-        setShow('uneditableDiaryPage');
+        setShow('friendsDiary');
       } else {
-        setShow('noDataPage');
+        setShow('noData');
       }
     }
   }, [mine, diaryData]);
   return (
     <div className="d-flex w-100 h-100 flex-column px-3 py-3">
       {
-        show === 'editableDiaryPage' && diaryData &&
+        show === 'myDiary' && diaryData &&
         <div className="w-100 h-100 d-flex flex-column">
           <div id="diary" className="border px-2 py-2 mb-2">
-            {diaryData[0].content}
+            {diaryData.content}
           </div>
           <div className="d-flex justify-content-center">
             <Button color="red" onClick={deleteDiary}>다시 작성하기</Button>
@@ -103,14 +93,12 @@ const Diary = ({host, date, mine}) => {
         </div>
       }
       {
-        show === 'addDiaryPage' &&
+        show === 'addDiary' &&
         <div className="d-flex w-100 h-100 flex-column">
           {
             status === '' &&
             <textarea type="text" className="w-100" id="diary" value={text}
-              onChange={(e) => {
-                setText(e.target.value);
-              }}
+              onChange={(e) => setText(e.target.value)}
               onKeyPress={(e) => {
                 if (e.charCode === 13 && !e.shiftKey) {
                   e.preventDefault(); addDiary();
@@ -125,27 +113,27 @@ const Diary = ({host, date, mine}) => {
           }
           <div className="d-flex justify-content-end mt-2">
             <Button color="blue" className="mr-1" onClick={startRecord}>
-                Start Recording</Button>
+              Start Recording
+            </Button>
             <Button color="blue" className="mr-1" onClick={stopRecord}>
-                Stop Recording</Button>
-            <Button color="brown"
-              onClick={addDiary}
-            >
-            Save
+              Stop Recording
+            </Button>
+            <Button color="brown" onClick={addDiary}>
+              Save
             </Button>
           </div>
         </div>
       }
       {
-        show === 'uneditableDiaryPage' && diaryData &&
+        show === 'friendsDiary' && diaryData &&
         <div className="w-100 h-100 d-flex flex-column">
           <div className="2-100 h-100 border px-2 py-2 mb-2">
-            {diaryData[0].content}
+            {diaryData.content}
           </div>
         </div>
       }
       {
-        show === 'noDataPage' &&
+        show === 'noData' &&
         <div className="h-100 w-100 d-flex flex-column
             justify-content-center align-items-center">
           <span className="h4">등록된 Diary가 없습니다.</span>

@@ -74,7 +74,7 @@ const getDiaryByDate = async (uid, date) => {
       const data = element.data();
       data.id = element.id;
       return data;
-    });
+    })[0];
   }
   return null;
 };
@@ -94,7 +94,7 @@ const getDiaryByMonth = async (uid, date) => {
       return data;
     });
   }
-  return null;
+  return [];
 };
 
 const addDiary = async (uid, date, content) => {
@@ -124,7 +124,7 @@ const getScheduleByMonth = async (uid, date) => {
       return data;
     });
   }
-  return null;
+  return [];
 };
 
 const getScheduleByDate = async (uid, date) => {
@@ -177,7 +177,7 @@ const getSelfieByDate = async (uid, date) => {
       const data = element.data();
       data.id = element.id;
       return data;
-    });
+    })[0];
   }
   return null;
 };
@@ -197,7 +197,7 @@ const getSelfieByMonth = async (uid, date) => {
       return data;
     });
   }
-  return null;
+  return [];
 };
 
 const addSelfie = async (uid, date, file, face) => {
@@ -253,7 +253,7 @@ const getPhotosByMonth = async (uid, date) => {
       return data;
     });
   }
-  return null;
+  return [];
 };
 
 const addPhoto = async (uid, date, file) => {
@@ -273,7 +273,11 @@ const addPhoto = async (uid, date, file) => {
 const deletePhoto = async (uid, imageName, docId) => {
   const ref = firebase.storage().ref();
   const fileRef = ref.child(`${uid}/photo/${imageName}`);
-  await fileRef.delete();
+  try {
+    await fileRef.delete();
+  } catch (e) {
+    console.log(e);
+  }
   await db.collection('photo').doc(docId).delete();
 };
 

@@ -1,17 +1,15 @@
 import React from 'react';
-import './css/Home.css';
-import {
-  Fade,
-  Button,
-} from 'reactstrap';
-import {
-  Link,
-} from 'react-router-dom';
-import firebase from '../firebase';
-import firestoreHandler from '../firestoreHandler';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const Home = (props) => {
+import {Fade, Button} from 'reactstrap';
+
+import firebase from '../modules/firebase';
+import firebaseHandler from '../modules/firebaseHandler';
+
+import './css/Home.css';
+
+const Home = ({user}) => {
   const googleLogin = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);
@@ -20,10 +18,10 @@ const Home = (props) => {
     firebase.auth().signOut();
   };
   const checkUser = async () => {
-    firestoreHandler.checkUser(
-        props.user.uid,
-        props.user.email,
-        props.user.displayName
+    firebaseHandler.checkUser(
+        user.uid,
+        user.email,
+        user.displayName
     );
   };
   return (
@@ -34,7 +32,7 @@ const Home = (props) => {
         <Fade in={true}>
         </Fade>
         {
-          !props.user &&
+          !user &&
           <Button outline color="light" className="mr-1" onClick={googleLogin}>
             <div className="d-flex align-items-center">
               <img src="/google_logo.png"
@@ -46,11 +44,11 @@ const Home = (props) => {
           </Button>
         }
         {
-          props.user &&
-          <span className="mb-3">{props.user.displayName}님 안녕하세요</span>
+          user &&
+          <span className="mb-3">{user.displayName}님 안녕하세요</span>
         }
         {
-          props.user &&
+          user &&
           <div className="d-flex">
             <Link to="/mycalendar">
               <Button color="blueGrey" className="mr-2" onClick={checkUser}>
@@ -70,7 +68,7 @@ Home.propTypes = {
     uid: PropTypes.string,
     email: PropTypes.string,
     displayName: PropTypes.string,
-  }).isRequired,
+  }),
 };
 
 export default Home;

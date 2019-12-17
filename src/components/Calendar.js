@@ -1,13 +1,15 @@
 import React from 'react';
-import DayDialog from './DayDialog';
+import PropTypes from 'prop-types';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '@fullcalendar/core/main.css';
 import '@fullcalendar/daygrid/main.css';
-import PropTypes from 'prop-types';
 
-import firestoreHandler from '../firestoreHandler';
+import DayDialog from './DayDialog';
+
+import firebaseHandler from '../modules/firebaseHandler';
 const formatDate = (date) => {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
@@ -22,16 +24,38 @@ const formatDate = (date) => {
   return [year, month, day].join('-');
 };
 
-const Calendar = (props) => {
+const Calendar = ({host, mine}) => {
   const [showDayDialog, setShowDayDialog] = React.useState(false);
   const [clickedDate, setClickedDate] = React.useState();
+  const [diaryLi, setDiaryLi] = React.useState([]);
+  const [selfieLi, setSelfieLi] = React.useState([]);
+  const [photoLi, setPhotoLi] = React.useState([]);
+  const [scheLi, setScheLi] = React.useState([]);
+
+  const fetchEventList = async () => {
+    const now = new Date(Date.now());
+    const diaryList = await firebaseHandler.getDiaryByMonth(host, now);
+    const selfieList = await firebaseHandler.getSelfieByMonth(host, now);
+    const photoList = await firebaseHandler.getPhotosByMonth(host, now);
+    const scheList = await firebaseHandler.getScheduleByMonth(host, now);
+    setDiaryLi(diaryList);
+    setSelfieLi(selfieList);
+    setPhotoLi(photoList);
+    setScheLi(scheList);
+  };
   const clickDate = (arg) => {
     const date = new Date(arg.date);
     setClickedDate(date);
     setShowDayDialog(true);
   };
-  const addMark = (date, list) => {
-    const element = document.querySelectorAll(`[data-date='${date}']`)[0];
+  const addMarkToDate = (date, list) => {
+    const color = {
+      diary: 'red',
+      selfie: 'orange',
+      photo: 'cyan',
+      schedule: 'blue',
+    };
+    const dayElement = document.querySelectorAll(`[data-date='${date}']`)[0];
     const div = document.createElement('div');
     div.style.width = '100%';
     div.style.height = '100%';
@@ -41,101 +65,67 @@ const Calendar = (props) => {
     div.style.alignItems = 'flex-start';
     div.style.pointerEvents = 'none';
     div.style.padding = '10px';
-    const color = {
-      diary: 'red',
-      selfie: 'orange',
-      photo: 'cyan',
-      schedule: 'blue',
-    };
-    list.forEach((element) => {
+    list.forEach((li) => {
       const dot = document.createElement('div');
-      dot.style.width = '5px';
-      dot.style.height = '5px';
+      dot.style.width = '6px';
+      dot.style.height = '6px';
       dot.style.borderRadius ='50%';
-      dot.style.backgroundColor = color[element];
-      dot.style.marginBottom = '4px';
+      dot.style.backgroundColor = color[li];
+      dot.style.marginBottom = '5px';
       div.append(dot);
     });
-    element.append(div);
+    dayElement.append(div);
   };
-  const checkMonthEvent = async () => {
-    const now = new Date(Date.now());
-    const diary = await firestoreHandler.getDiaryByMonth(props.host, now);
-    const selfie = await firestoreHandler.getSelfieByMonth(props.host, now);
-    const photo = await firestoreHandler.getPhotosByMonth(props.host, now);
-    const schedule = await firestoreHandler.getScheduleByMonth(props.host, now);
-    const datas = {};
-    if (diary) {
-      diary.forEach((element) => {
-        const date = new Date(element.date.toDate());
-        const dateString = formatDate(date);
-        if (datas[dateString]) {
-          if (!datas[dateString].includes('diary')) {
-            datas[dateString].push('diary');
+  const addMarkToCalendar = async () => {
+    const dataPerCategory = {
+      diary: diaryLi,
+      selfie: selfieLi,
+      photo: photoLi,
+      schedule: scheLi,
+    };
+    const dataPerDate = {};
+
+    for (const key in dataPerCategory) {
+      if (dataPerCategory.hasOwnProperty(key)) {
+        dataPerCategory[key].forEach((element) => {
+          const date = new Date(element.date.toDate());
+          const dateString = formatDate(date);
+          if (dataPerDate[dateString]) {
+            if (!dataPerDate[dateString].includes(key)) {
+              dataPerDate[dateString].push(key);
+            }
+          } else {
+            dataPerDate[dateString] = [key];
           }
-        } else {
-          datas[dateString] = ['diary'];
-        }
-      });
+        });
+      }
     }
-    if (selfie) {
-      selfie.forEach((element) => {
-        const date = new Date(element.date.toDate());
-        const dateString = formatDate(date);
-        if (datas[dateString]) {
-          if (!datas[dateString].includes('selfie')) {
-            datas[dateString].push('selfie');
-          }
-        } else {
-          datas[dateString] = ['selfie'];
-        }
-      });
-    }
-    if (photo) {
-      photo.forEach((element) => {
-        const date = new Date(element.date.toDate());
-        const dateString = formatDate(date);
-        if (datas[dateString]) {
-          if (!datas[dateString].includes('photo')) {
-            datas[dateString].push('photo');
-          }
-        } else {
-          datas[dateString] = ['photo'];
-        }
-      });
-    }
-    if (schedule) {
-      schedule.forEach((element) => {
-        const date = new Date(element.date.toDate());
-        const dateString = formatDate(date);
-        if (datas[dateString]) {
-          if (!datas[dateString].includes('schedule')) {
-            datas[dateString].push('schedule');
-          }
-        } else {
-          datas[dateString] = ['schedule'];
-        }
-      });
-    }
-    for (const key in datas) {
-      if (datas.hasOwnProperty(key)) {
+    for (const key in dataPerDate) {
+      if (dataPerDate.hasOwnProperty(key)) {
         const element = document.querySelectorAll(`[data-date='${key}']`)[0];
         element.innerHTML = '';
-        addMark(key, datas[key]);
+        addMarkToDate(key, dataPerDate[key]);
       }
     }
   };
   React.useEffect(() => {
-    checkMonthEvent();
+    addMarkToCalendar();
   });
+  React.useEffect(() => {
+    setDiaryLi([]);
+    setSelfieLi([]);
+    setPhotoLi([]);
+    setScheLi([]);
+    fetchEventList();
+  }, [host]);
   return (
     <div>
       <DayDialog
         toggle={() => setShowDayDialog(!showDayDialog)}
         open={showDayDialog}
         date={clickedDate}
-        host={props.host}
-        mine={props.mine}
+        host={host}
+        mine={mine}
       />
       <FullCalendar
         defaultView="dayGridMonth"

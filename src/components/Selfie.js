@@ -1,50 +1,33 @@
 import React from 'react';
-import {
-  Spinner,
-  Button,
-  Input,
-} from 'reactstrap';
-import './css/Selfie.css';
 import PropTypes from 'prop-types';
-import firestoreHandler from '../firestoreHandler';
+
+import {Spinner, Button, Input} from 'reactstrap';
+
+import firebaseHandler from '../modules/firebaseHandler';
+import naverAPIHandler from '../modules/naverAPIHandler';
+
+import './css/Selfie.css';
 
 const Selfie = ({date, host, mine}) => {
   const [selfieData, setSelfieData] = React.useState();
   const [uploading, setUploading] = React.useState(false);
   const [show, setShow] = React.useState();
   const fetchSelfieData = async () => {
-    const data = await firestoreHandler.getSelfieByDate(host, date);
+    const data = await firebaseHandler.getSelfieByDate(host, date);
     if (data) {
-      setSelfieData(data[0]);
+      setSelfieData(data);
     }
   };
   const handleChange = async (e) => {
     setUploading(true);
-    const formData = new FormData();
     const file = e.target.files[0];
-    formData.append('image', file);
-    const url = 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/vision/face';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-Naver-Client-Id': process.env.REACT_APP_NAVER_CLIENT_ID,
-        'X-Naver-Client-Secret': process.env.REACT_APP_NAVER_CLIENT_SECRET,
-      },
-      body: formData,
-    });
-    const data = await response.json();
-    let face;
-    if (data.info.faceCount === 1) {
-      face = data.faces[0];
-    } else {
-      face = null;
-    }
-    await firestoreHandler.addSelfie(host, date, file, face);
+    const face = await naverAPIHandler.analyzeFace(file);
+    await firebaseHandler.addSelfie(host, date, file, face);
     await fetchSelfieData();
     setUploading(false);
   };
   const deleteSelfie = async () => {
-    await firestoreHandler.deleteSelfie(
+    await firebaseHandler.deleteSelfie(
         host, selfieData.imageName, selfieData.id);
     setSelfieData();
   };
@@ -54,15 +37,15 @@ const Selfie = ({date, host, mine}) => {
   React.useEffect(() => {
     if (mine) {
       if (selfieData) {
-        setShow('editableSelfiePage');
+        setShow('mySelfie');
       } else {
-        setShow('addButtonPage');
+        setShow('addSelfie');
       }
     } else {
       if (selfieData) {
-        setShow('uneditableSelfiePage');
+        setShow('friendsSelfie');
       } else {
-        setShow('noDataPage');
+        setShow('noData');
       }
     }
   }, [mine, selfieData]);
@@ -70,7 +53,7 @@ const Selfie = ({date, host, mine}) => {
     <div className="h-100 d-flex">
       <Input id="selfie-input" type="file" onChange={handleChange} />
       {
-        show === 'editableSelfiePage' &&
+        show === 'mySelfie' &&
         <div className="h-100 w-100 d-flex flex-column
           justify-content-center align-items-center">
           <img id="selfie-image" src={selfieData ?
@@ -81,7 +64,7 @@ const Selfie = ({date, host, mine}) => {
         </div>
       }
       {
-        show === 'addButtonPage' &&
+        show === 'addSelfie' &&
         <div className="h-100 w-100 d-flex justify-content-center
           align-items-center">
           <label htmlFor="selfie-input">
@@ -100,7 +83,7 @@ const Selfie = ({date, host, mine}) => {
         </div>
       }
       {
-        show === 'uneditableSelfiePage' &&
+        show === 'friendsSelfie' &&
         <div className="h-100 w-100 d-flex flex-column
           justify-content-center align-items-center">
           <img id="selfie-image" src={selfieData ?
@@ -110,7 +93,7 @@ const Selfie = ({date, host, mine}) => {
         </div>
       }
       {
-        show === 'noDataPage' &&
+        show === 'noData' &&
         <div className="h-100 w-100 d-flex flex-column
           justify-content-center align-items-center">
           <span className="h4">등록된 Selfie가 없습니다.</span>
