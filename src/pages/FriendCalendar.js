@@ -8,6 +8,7 @@ import firestoreHandler from '../firestoreHandler';
 
 import {Row, Col} from 'reactstrap';
 import './css/MyCalendar.css';
+import PropTypes from 'prop-types';
 
 const FriendCalendar = (props) => {
   const {uid} = useParams();
@@ -39,6 +40,14 @@ const FriendCalendar = (props) => {
       </div>
     </div>
   );
+};
+
+FriendCalendar.propTypes = {
+  user: PropTypes.shape({
+    uid: PropTypes.string,
+    email: PropTypes.string,
+    displayName: PropTypes.string,
+  }).isRequired,
 };
 
 export default FriendCalendar;
