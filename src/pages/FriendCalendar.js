@@ -2,24 +2,24 @@ import React from 'react';
 import MainLayout from '../components/MainLayout';
 import Calendar from '../components/Calendar';
 import {
-  useParams
-} from "react-router-dom";
+  useParams,
+} from 'react-router-dom';
 import firestoreHandler from '../firestoreHandler';
 
-import { Row, Col } from 'reactstrap';
+import {Row, Col} from 'reactstrap';
 import './css/MyCalendar.css';
 import PropTypes from 'prop-types';
 
 const FriendCalendar = (props) => {
-  const { uid } = useParams();
+  const {uid} = useParams();
   const [hostOfCalendar, setHostOfCalendar] = React.useState('');
   const fetchHost = async () => {
     const data = await firestoreHandler.getUser(uid);
     setHostOfCalendar(data[0].name);
-  }
+  };
   React.useEffect(() => {
     fetchHost();
-  }, [])
+  }, []);
   return (
     <div className="h-100">
       {
@@ -39,8 +39,8 @@ const FriendCalendar = (props) => {
         </Row>
       </div>
     </div>
-  )
-}
+  );
+};
 
 FriendCalendar.propTypes = {
   user: PropTypes.shape({

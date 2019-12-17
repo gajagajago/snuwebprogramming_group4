@@ -1,6 +1,6 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 
 import Diary from './Diary';
 import Selfie from './Selfie';
@@ -15,18 +15,21 @@ const DayDialog = (props) => {
   const mine = props.mine;
   const [activeTab, setActiveTab] = React.useState('diary');
 
-  const toggle = tab => {
-    if(activeTab !== tab) setActiveTab(tab);
-  }
+  const toggle = (tab) => {
+    if (activeTab !== tab) setActiveTab(tab);
+  };
   return (
     <Dialog onClose={props.toggle} open={props.open}>
       <div className="d-flex flex-column px-5 py-5 h-100">
-        <h1>{date ? `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일` : ''}</h1>
+        <h1>{date ? `${date.getFullYear()}년 ${date.getMonth()+1}월 
+        ${date.getDate()}일` : ''}</h1>
         <Nav tabs>
           <NavItem>
             <NavLink
               className={activeTab === 'diary' ? 'active' : ''}
-              onClick={() => { toggle('diary'); }}
+              onClick={() => {
+                toggle('diary');
+              }}
             >
               Diary
             </NavLink>
@@ -34,7 +37,9 @@ const DayDialog = (props) => {
           <NavItem>
             <NavLink
               className={activeTab === 'selfie' ? 'active' : ''}
-              onClick={() => { toggle('selfie'); }}
+              onClick={() => {
+                toggle('selfie');
+              }}
             >
               Selfie
             </NavLink>
@@ -42,7 +47,9 @@ const DayDialog = (props) => {
           <NavItem>
             <NavLink
               className={activeTab === 'photo' ? 'active' : ''}
-              onClick={() => { toggle('photo'); }}
+              onClick={() => {
+                toggle('photo');
+              }}
             >
               Photo
             </NavLink>
@@ -50,7 +57,9 @@ const DayDialog = (props) => {
           <NavItem>
             <NavLink
               className={activeTab === 'schedule' ? 'active' : ''}
-              onClick={() => { toggle('schedule'); }}
+              onClick={() => {
+                toggle('schedule');
+              }}
             >
               Schedule
             </NavLink>
@@ -72,7 +81,7 @@ const DayDialog = (props) => {
         </TabContent>
       </div>
     </Dialog>
-  )
-}
+  );
+};
 
 export default DayDialog;

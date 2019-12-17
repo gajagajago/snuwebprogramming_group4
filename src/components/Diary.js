@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button } from 'reactstrap';
+import {Button} from 'reactstrap';
 import RecordRTC from 'recordrtc';
 
 import './css/Diary.css';
 import firestoreHandler from '../firestoreHandler';
 
-const Diary = ({ host, date, mine}) => {
+const Diary = ({host, date, mine}) => {
   const [recorder, setRecorder] = React.useState();
   const [diaryData, setDiaryData] = React.useState();
   const [text, setText] = React.useState();
@@ -30,49 +30,48 @@ const Diary = ({ host, date, mine}) => {
       headers: {
         'Content-Type': 'application/octet-stream',
         'X-NCP-APIGW-API-KEY-ID': clientId,
-        'X-NCP-APIGW-API-KEY': clientSecret
+        'X-NCP-APIGW-API-KEY': clientSecret,
       },
       body: blob,
     });
     const data = await response.json();
     setText(data.text);
-  }
+  };
   const startRecord = () => {
     const success = async (stream) => {
       const tempRecorder = RecordRTC(stream, {
-        type: 'video'
+        type: 'video',
       });
       setStatus('녹음중...');
       tempRecorder.startRecording();
       setRecorder(tempRecorder);
-    }
+    };
     const error = (error) => {
       console.log(error);
-    }
-    navigator.getUserMedia({ audio: true }, success, error);
-  }
+    };
+    navigator.getUserMedia({audio: true}, success, error);
+  };
   const stopRecord = () => {
     recorder.stopRecording(async () => {
-      let blob = recorder.getBlob();
+      const blob = recorder.getBlob();
       setStatus('음성 해석중...');
       await stt(blob);
       setStatus('');
     });
-  }
-  
+  };
   const addDiary = async () => {
     await firestoreHandler.addDiary(host, date, text)
     await fetchDiaryData();
-  }
+  };
 
   const deleteDiary = async () => {
     await firestoreHandler.deleteDiary(diaryData[0].id);
     await fetchDiaryData();
-  }
+  };
 
   React.useEffect(() => {
     fetchDiaryData();
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     if (mine) {
@@ -85,11 +84,10 @@ const Diary = ({ host, date, mine}) => {
       if (diaryData) {
         setShow('uneditableDiaryPage');
       } else {
-        setShow('noDataPage')
+        setShow('noDataPage');
       }
     }
   }, [mine, diaryData]);
-  
   return (
     <div className="d-flex w-100 h-100 flex-column px-3 py-3">
       {
@@ -109,19 +107,28 @@ const Diary = ({ host, date, mine}) => {
           {
             status === '' &&
             <textarea type="text" className="w-100" id="diary" value={text}
-            onChange={(e) => { setText(e.target.value) }}
-            onKeyPress={(e) => { if (e.charCode === 13  && !e.shiftKey) { e.preventDefault(); addDiary(); } } }
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
+              onKeyPress={(e) => {
+                if (e.charCode === 13 && !e.shiftKey) {
+                  e.preventDefault(); addDiary();
+                }
+              }}
             />
           }
           {
             status !== '' &&
-            <div className="w-100 d-flex justify-content-center align-items-center h4" id="status">{status}</div>
+            <div className="w-100 d-flex justify-content-center
+              align-items-center h4" id="status">{status}</div>
           }
           <div className="d-flex justify-content-end mt-2">
-            <Button color="blue" className="mr-1" onClick={startRecord}>Start Recording</Button>
-            <Button color="blue" className="mr-1" onClick={stopRecord}>Stop Recording</Button>
-            <Button color="brown" 
-              onClick={addDiary} 
+            <Button color="blue" className="mr-1" onClick={startRecord}>
+                Start Recording</Button>
+            <Button color="blue" className="mr-1" onClick={stopRecord}>
+                Stop Recording</Button>
+            <Button color="brown"
+              onClick={addDiary}
             >
             Save
             </Button>
@@ -138,12 +145,13 @@ const Diary = ({ host, date, mine}) => {
       }
       {
         show === 'noDataPage' &&
-        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+        <div className="h-100 w-100 d-flex flex-column
+            justify-content-center align-items-center">
           <span className="h4">등록된 Diary가 없습니다.</span>
         </div>
       }
     </div>
-  )
-}
+  );
+};
 
 export default Diary;
