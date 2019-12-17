@@ -1,12 +1,11 @@
 import React from 'react';
-
 import DayDialog from './DayDialog';
-
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '@fullcalendar/core/main.css';
 import '@fullcalendar/daygrid/main.css';
+import PropTypes from 'prop-types';
 
 import firestoreHandler from '../firestoreHandler';
 const formatDate = (date) => {
@@ -146,6 +145,11 @@ const Calendar = (props) => {
       />
     </div>
   );
+};
+
+Calendar.propTypes = {
+  host: PropTypes.string.isRequired,
+  mine: PropTypes.bool.isRequired,
 };
 
 export default Calendar;

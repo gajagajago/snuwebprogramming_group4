@@ -24,9 +24,9 @@ import {
 } from 'reactstrap';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-
 import './css/MainLayout.css';
 import firestoreHandler from '../firestoreHandler';
+import PropTypes from 'prop-types';
 
 const Layout = (props) => {
   const [open, setOpen] = useState(false);
@@ -64,7 +64,7 @@ const Layout = (props) => {
     setOpen(true);
   };
   const followExist = (uid) => {
-    const find = followingList.find(element => element.following.uid === uid);
+    const find = followingList.find((element) => element.following.uid === uid);
     if (find) {
       return true;
     }
@@ -193,6 +193,15 @@ const Layout = (props) => {
       </Drawer>
     </div>
   );
+};
+
+Layout.propTypes = {
+  user: PropTypes.shape({
+    uid: PropTypes.string,
+    email: PropTypes.string,
+    displayName: PropTypes.string,
+  }).isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default Layout;

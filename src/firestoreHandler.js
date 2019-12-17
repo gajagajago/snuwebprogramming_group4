@@ -77,7 +77,7 @@ const getDiaryByDate = async (uid, date) => {
     });
   }
   return null;
-}
+};
 
 const getDiaryByMonth = async (uid, date) => {
   const start = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-1`);

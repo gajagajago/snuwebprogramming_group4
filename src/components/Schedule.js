@@ -3,6 +3,7 @@ import {Button, Input} from 'reactstrap';
 import Checkbox from '@material-ui/core/Checkbox';
 import firestoreHandler from '../firestoreHandler';
 import './css/Schedule.css';
+import PropTypes from 'prop-types';
 
 const Schedule = ({date, host, mine}) => {
   const [schedule, setSchedule] = React.useState('');
@@ -74,8 +75,9 @@ const Schedule = ({date, host, mine}) => {
           scheduleList.map((element) => {
             const check = (element.done === true) ? 'true' : 'false';
             return (
-              <div className = "w-100 d-flex align-items-center justify-content-between"
-                key={element.id} >
+              <div className="w-100 d-flex align-items-center
+              justify-content-between"
+              key={element.id} >
                 <div className= "d-flex align-items-center" >
                   <Checkbox onChange={() =>
                     doneChange(element.id, element.done)}
@@ -118,6 +120,12 @@ const Schedule = ({date, host, mine}) => {
       }
     </div>
   );
+};
+
+Schedule.propTypes = {
+  date: PropTypes.any,
+  host: PropTypes.string.isRequired,
+  mine: PropTypes.bool.isRequired,
 };
 
 export default Schedule;

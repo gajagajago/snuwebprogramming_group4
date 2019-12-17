@@ -1,13 +1,12 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
-
 import Diary from './Diary';
 import Selfie from './Selfie';
 import Photo from './Photo';
 import Schedule from './Schedule';
-
 import './css/DayDialog.css';
+import PropTypes from 'prop-types';
 
 const DayDialog = (props) => {
   const date = props.date;
@@ -82,6 +81,14 @@ const DayDialog = (props) => {
       </div>
     </Dialog>
   );
+};
+
+DayDialog.propTypes = {
+  date: PropTypes.any,
+  host: PropTypes.string.isRequired,
+  mine: PropTypes.bool.isRequired,
+  toggle: PropTypes.func,
+  open: PropTypes.bool,
 };
 
 export default DayDialog;

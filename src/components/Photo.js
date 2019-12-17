@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Input} from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
 import firestoreHandler from '../firestoreHandler';
+import PropTypes from 'prop-types';
 
 import './css/Photo.css';
 const Photo = ({date, host, mine}) => {
@@ -115,6 +116,12 @@ const Photo = ({date, host, mine}) => {
 
     </div>
   );
+};
+
+Photo.propTypes = {
+  date: PropTypes.any,
+  host: PropTypes.string.isRequired,
+  mine: PropTypes.bool.isRequired,
 };
 
 export default Photo;
