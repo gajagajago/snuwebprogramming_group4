@@ -86,7 +86,7 @@ const Schedule = ({date, host, mine}) => {
                     doneChange(element.id, element.done)}
                   checked={element.done} color="primary"
                   inputProps={{'aria-label': 'secondary checkbox'}}/>
-                  <div id = {check}>
+                  <div className={check}>
                     {element.content}
                   </div>
                 </div>
