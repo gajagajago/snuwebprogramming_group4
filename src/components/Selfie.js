@@ -72,7 +72,7 @@ const Selfie = ({date, host, mine}) => {
         show === 'editableSelfiePage' &&
         <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
           <img id="selfie-image" src={selfieData ? selfieData.imageUrl : ''} alt="selfie" />
-          <span className="h4 mb-3">{selfieData && selfieData.face ? selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
+          <span className="h4 my-2">{selfieData && selfieData.face ? selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
           <Button color="red" onClick={deleteSelfie}>삭제</Button>
         </div>
       }
