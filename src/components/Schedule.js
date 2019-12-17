@@ -1,9 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {Button, Input} from 'reactstrap';
 import Checkbox from '@material-ui/core/Checkbox';
+
 import firebaseHandler from '../modules/firebaseHandler';
+
 import './css/Schedule.css';
-import PropTypes from 'prop-types';
 
 const Schedule = ({date, host, mine}) => {
   const [schedule, setSchedule] = React.useState('');
