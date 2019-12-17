@@ -62,7 +62,7 @@ const Schedule = ({date, host, mine}) => {
     }
   }, [mine, scheduleList]);
   return (
-    <div className="h-100 px-3 py-3">
+    <div id="schedule-container" className="h-100 px-3 py-3">
       {
         show === 'mySchedule' &&
       <div>
