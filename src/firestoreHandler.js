@@ -78,6 +78,25 @@ const getDiaryByDate = async (uid, date) => {
   }
   return null;
 }
+
+const getDiaryByMonth = async (uid, date) => {
+  const start = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-1`);
+  const end = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-31`);
+  const result = await db.collection('diary')
+  .where('date', '>=', start)
+  .where('date', '<=', end)
+  .where('uid', '==', uid)
+  .get();
+  if (!result.empty) {
+    return result.docs.map((element) => {
+      const data = element.data();
+      data.id = element.id;
+      return data;
+    });
+  }
+  return null;
+}
+
 const addDiary = async (uid, date, content) => {
   await db.collection('diary').add({
     uid,
@@ -163,6 +182,24 @@ const getSelfieByDate = async (uid, date) => {
   return null;
 }
 
+const getSelfieByMonth = async (uid, date) => {
+  const start = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-1`);
+  const end = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-31`);
+  const result = await db.collection('selfie')
+  .where('date', '>=', start)
+  .where('date', '<=', end)
+  .where('uid', '==', uid)
+  .get();
+  if (!result.empty) {
+    return result.docs.map((element) => {
+      const data = element.data();
+      data.id = element.id;
+      return data;
+    });
+  }
+  return null;
+}
+
 const addSelfie = async (uid, date, file, face) => {
   const ref = firebase.storage().ref();
   const task = ref.child(`${uid}/selfie/${file.name}`).put(file, { contentType: file.type });
@@ -188,6 +225,24 @@ const deleteSelfie = async (uid, imageName, docId) => {
 const getPhotosByDate = async (uid, date) => {
   const result = await db.collection('photo')
   .where('date', '==', date)
+  .where('uid', '==', uid)
+  .get();
+  if (!result.empty) {
+    return result.docs.map((element) => {
+      const data = element.data();
+      data.id = element.id;
+      return data;
+    });
+  }
+  return null;
+}
+
+const getPhotosByMonth = async (uid, date) => {
+  const start = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-1`);
+  const end = new Date(`${date.getFullYear()}-${date.getMonth() + 1}-31`);
+  const result = await db.collection('photo')
+  .where('date', '>=', start)
+  .where('date', '<=', end)
   .where('uid', '==', uid)
   .get();
   if (!result.empty) {
@@ -228,6 +283,7 @@ export default {
   getFollowing,
 
   getDiaryByDate,
+  getDiaryByMonth,
   addDiary,
   deleteDiary,
 
@@ -239,10 +295,12 @@ export default {
   undoSchedule,
 
   getSelfieByDate,
+  getSelfieByMonth,
   addSelfie,
   deleteSelfie,
 
   getPhotosByDate,
+  getPhotosByMonth,
   addPhoto,
   deletePhoto,
 }
