@@ -1,12 +1,12 @@
 #schedule-container {
     overflow: auto;
 }
-#true {
+.true {
     text-decoration: line-through;
     text-decoration-style: solid black;
     color: gray;
 } 
-#false {
+.false {
     text-decoration: none;
     color: black
 }

@@ -26,24 +26,26 @@ const formatDate = (date) => {
 
 const Calendar = ({host, mine}) => {
   const [showDayDialog, setShowDayDialog] = React.useState(false);
+  const [showingDate, setShowingDate] = React.useState(new Date(Date.now()));
   const [clickedDate, setClickedDate] = React.useState();
   const [diaryLi, setDiaryLi] = React.useState([]);
   const [selfieLi, setSelfieLi] = React.useState([]);
   const [photoLi, setPhotoLi] = React.useState([]);
   const [scheLi, setScheLi] = React.useState([]);
+  const calendar = React.useRef();
 
-  const fetchEventList = async () => {
-    const now = new Date(Date.now());
-    const diaryList = await firebaseHandler.getDiaryByMonth(host, now);
-    const selfieList = await firebaseHandler.getSelfieByMonth(host, now);
-    const photoList = await firebaseHandler.getPhotosByMonth(host, now);
-    const scheList = await firebaseHandler.getScheduleByMonth(host, now);
+  const fetchEventList = async (date) => {
+    const diaryList = await firebaseHandler.getDiaryByMonth(host, date);
+    const selfieList = await firebaseHandler.getSelfieByMonth(host, date);
+    const photoList = await firebaseHandler.getPhotosByMonth(host, date);
+    const scheList = await firebaseHandler.getScheduleByMonth(host, date);
     setDiaryLi(diaryList);
     setSelfieLi(selfieList);
     setPhotoLi(photoList);
     setScheLi(scheList);
   };
   const clickDate = (arg) => {
+    // console.log(calendar.current.calendar.view.currentStart);
     const date = new Date(arg.date);
     setClickedDate(date);
     setShowDayDialog(true);
@@ -103,21 +105,35 @@ const Calendar = ({host, mine}) => {
     for (const key in dataPerDate) {
       if (dataPerDate.hasOwnProperty(key)) {
         const element = document.querySelectorAll(`[data-date='${key}']`)[0];
-        element.innerHTML = '';
-        addMarkToDate(key, dataPerDate[key]);
+        if (element) {
+          element.innerHTML = '';
+          addMarkToDate(key, dataPerDate[key]);
+        }
       }
     }
   };
   React.useEffect(() => {
     addMarkToCalendar();
+    const prevButton = document.getElementsByClassName('fc-prev-button')[0];
+    prevButton.addEventListener('click', () => {
+      setShowingDate(calendar.current.calendar.view.currentStart);
+    });
+    const nextButton = document.getElementsByClassName('fc-next-button')[0];
+    nextButton.addEventListener('click', () => {
+      setShowingDate(calendar.current.calendar.view.currentStart);
+    });
   });
   React.useEffect(() => {
     setDiaryLi([]);
     setSelfieLi([]);
     setPhotoLi([]);
     setScheLi([]);
-    fetchEventList();
-  }, [host]);
+  }, [host, showingDate]);
+  React.useEffect(() => {
+    if (showDayDialog === false) {
+      fetchEventList(showingDate);
+    }
+  }, [host, showingDate, showDayDialog]);
   return (
     <div>
       <DayDialog
@@ -128,6 +144,7 @@ const Calendar = ({host, mine}) => {
         mine={mine}
       />
       <FullCalendar
+        ref={calendar}
         defaultView="dayGridMonth"
         plugins={[dayGridPlugin, interactionPlugin]}
         aspectRatio="1.3"
