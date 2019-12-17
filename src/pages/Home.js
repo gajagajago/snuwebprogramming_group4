@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import firebase from '../firebase';
 import firestoreHandler from '../firestoreHandler';
+import PropTypes from 'prop-types';
 
 const Home = (props) => {
   const googleLogin = async () => {
@@ -49,6 +50,14 @@ const Home = (props) => {
       }
     </div>
   );
+};
+
+Home.propTypes = {
+  user: PropTypes.shape({
+    uid: PropTypes.string,
+    email: PropTypes.string,
+    displayName: PropTypes.string,
+  }).isRequired,
 };
 
 export default Home;
