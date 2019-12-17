@@ -59,17 +59,19 @@ const Calendar = (props) => {
   }
   const checkMonthEvent = async () => {
     const now = new Date(Date.now());
-    const diary = await firestoreHandler.getDiaryByMonth(props.user.uid, now);
-    const selfie = await firestoreHandler.getSelfieByMonth(props.user.uid, now);
-    const photo = await firestoreHandler.getPhotosByMonth(props.user.uid, now);
-    const schedule = await firestoreHandler.getScheduleByMonth(props.user.uid, now);
+    const diary = await firestoreHandler.getDiaryByMonth(props.host, now);
+    const selfie = await firestoreHandler.getSelfieByMonth(props.host, now);
+    const photo = await firestoreHandler.getPhotosByMonth(props.host, now);
+    const schedule = await firestoreHandler.getScheduleByMonth(props.host, now);
     const datas = {};
     if (diary) {
       diary.forEach((element) => {
         const date = new Date(element.date.toDate());
         const dateString = formatDate(date);
         if (datas[dateString]) {
-          datas[dateString].push('diary');
+          if (!datas[dateString].includes('diary')) {
+            datas[dateString].push('diary');
+          }
         } else {
           datas[dateString] = ['diary'];
         }
@@ -80,7 +82,9 @@ const Calendar = (props) => {
         const date = new Date(element.date.toDate());
         const dateString = formatDate(date);
         if (datas[dateString]) {
-          datas[dateString].push('selfie');
+          if (!datas[dateString].includes('selfie')) {
+            datas[dateString].push('selfie');
+          }
         } else {
           datas[dateString] = ['selfie'];
         }
@@ -91,7 +95,9 @@ const Calendar = (props) => {
         const date = new Date(element.date.toDate());
         const dateString = formatDate(date);
         if (datas[dateString]) {
-          datas[dateString].push('photo');
+          if (!datas[dateString].includes('photo')) {
+            datas[dateString].push('photo');
+          }
         } else {
           datas[dateString] = ['photo'];
         }
@@ -103,13 +109,17 @@ const Calendar = (props) => {
         const dateString = formatDate(date);
         
         if (datas[dateString]) {
-          datas[dateString].push('schedule');
+          if (!datas[dateString].includes('schedule')) {
+            datas[dateString].push('schedule');
+          }
         } else {
           datas[dateString] = ['schedule'];
         }
       });
     }
     for (let key in datas) {
+      const element = document.querySelectorAll(`[data-date='${key}']`)[0];
+      element.innerHTML = '';
       if (datas.hasOwnProperty(key)) {
         addMark(key, datas[key]);
       }
