@@ -24,12 +24,12 @@ const Home = (props) => {
   };
   return (
     <div id="home" className="d-flex flex-column justify-content-center align-items-end px-5">
-      <Fade in={true}>
-      </Fade>
-      <div id="logInOut">
+      <div className="d-flex flex-column align-items-center text-light mr-5 mb-5 h4">
+        <Fade in={true}>
+        </Fade>
         {
           !props.user &&
-          <Button outline color="dark" className="mr-1" onClick={googleLogin}>
+          <Button outline color="light" className="mr-1" onClick={googleLogin}>
             <div className="d-flex align-items-center">
               <img src="/google_logo.png" alt="google_logo" id="google-logo" className="mr-2"/>구글 아이디로 로그인
             </div>
@@ -37,7 +37,7 @@ const Home = (props) => {
         }
         {
           props.user &&
-          <span className="mb-2">{props.user.displayName}님 안녕하세요</span>
+          <span className="mb-3">{props.user.displayName}님 안녕하세요</span>
         }
         {
           props.user &&
@@ -46,7 +46,6 @@ const Home = (props) => {
             <Button color="dark" onClick={logout}>로그아웃</Button>
           </div>
         }
-
       </div>
     </div>
   );
