@@ -30,7 +30,10 @@
   },
   "eslintConfig": {
     "parser": "babel-eslint",
-    "extends": ["plugin:react/recommended", "google"],
+    "extends": [
+      "plugin:react/recommended",
+      "google"
+    ],
     "env": {
       "browser": true,
       "es6": true
@@ -41,6 +44,9 @@
         "jsx": true
       },
       "sourceType": "module"
+    },
+    "rules": {
+      "linebreak-style": 0
     }
   },
   "browserslist": {

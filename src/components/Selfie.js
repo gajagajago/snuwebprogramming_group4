@@ -42,11 +42,11 @@ const Selfie = ({date, host, mine}) => {
     await firestoreHandler.addSelfie(host, date, file, face);
     await fetchSelfieData();
     setUploading(false);
-  }
+  };
   const deleteSelfie = async () => {
     await firestoreHandler.deleteSelfie(host, selfieData.imageName, selfieData.id);
     setSelfieData();
-  }
+  };
   React.useEffect(() => {
     fetchSelfieData();
   }, []);
@@ -61,7 +61,7 @@ const Selfie = ({date, host, mine}) => {
       if (selfieData) {
         setShow('uneditableSelfiePage');
       } else {
-        setShow('noDataPage')
+        setShow('noDataPage');
       }
     }
   }, [mine, selfieData]);
@@ -70,17 +70,22 @@ const Selfie = ({date, host, mine}) => {
       <Input id="selfie-input" type="file" onChange={handleChange} />
       {
         show === 'editableSelfiePage' &&
-        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
-          <img id="selfie-image" src={selfieData ? selfieData.imageUrl : ''} alt="selfie" />
-          <span className="h4 my-2">{selfieData && selfieData.face ? selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
+        <div className="h-100 w-100 d-flex flex-column
+          justify-content-center align-items-center">
+          <img id="selfie-image" src={selfieData ?
+            selfieData.imageUrl : ''} alt="selfie" />
+          <span className="h4 my-2">{selfieData && selfieData.face ?
+            selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
           <Button color="red" onClick={deleteSelfie}>삭제</Button>
         </div>
       }
       {
         show === 'addButtonPage' &&
-        <div className="h-100 w-100 d-flex justify-content-center align-items-center">
+        <div className="h-100 w-100 d-flex justify-content-center
+          align-items-center">
           <label htmlFor="selfie-input">
-            <div id="selfie-add-button" className="bg-blueGrey text-light rounded px-3 py-1">
+            <div id="selfie-add-button" className="bg-blueGrey
+            text-light rounded px-3 py-1">
               {
                 uploading &&
                 <Spinner size="sm" color="light" />
@@ -95,19 +100,23 @@ const Selfie = ({date, host, mine}) => {
       }
       {
         show === 'uneditableSelfiePage' &&
-        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
-          <img id="selfie-image" src={selfieData ? selfieData.imageUrl : ''} alt="selfie" />
-          <span className="h4 mb-3">{selfieData && selfieData.face ? selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
+        <div className="h-100 w-100 d-flex flex-column
+          justify-content-center align-items-center">
+          <img id="selfie-image" src={selfieData ?
+            selfieData.imageUrl : ''} alt="selfie" />
+          <span className="h4 mb-3">{selfieData && selfieData.face ?
+            selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
         </div>
       }
       {
         show === 'noDataPage' &&
-        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+        <div className="h-100 w-100 d-flex flex-column
+          justify-content-center align-items-center">
           <span className="h4">등록된 Selfie가 없습니다.</span>
         </div>
       }
     </div>
-  )
-}
+  );
+};
 
 export default Selfie;
