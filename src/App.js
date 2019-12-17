@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  useRouteMatch,
-} from "react-router-dom";
+} from 'react-router-dom';
 import firebase from './firebase';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import purple from '@material-ui/core/colors/purple';
 
@@ -36,7 +35,7 @@ const App = () => {
     } else {
       setUser();
     }
-  })
+  });
 
   return (
     <Router>
@@ -57,6 +56,6 @@ const App = () => {
       </ThemeProvider>
     </Router>
   );
-}
+};
 
 export default App;

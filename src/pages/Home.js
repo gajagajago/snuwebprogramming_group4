@@ -14,13 +14,13 @@ const Home = (props) => {
   const googleLogin = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);
-  }
+  };
   const logout = async () => {
     firebase.auth().signOut();
-  }
+  };
   const checkUser = async () => {
     firestoreHandler.checkUser(props.user.uid, props.user.email, props.user.displayName);
-  }
+  };
   return (
     <div id="home" className="d-flex flex-column justify-content-center align-items-center">
       <Fade in={true}>
@@ -48,7 +48,7 @@ const Home = (props) => {
         </div>
       }
     </div>
-  )
+  );
 };
 
 export default Home;
