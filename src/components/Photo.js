@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {Button, Input} from 'reactstrap';
 import AddIcon from '@material-ui/icons/Add';
-import firestoreHandler from '../firestoreHandler';
-import PropTypes from 'prop-types';
+
+import firebaseHandler from '../modules/firebaseHandler';
 
 import './css/Photo.css';
 const Photo = ({date, host, mine}) => {
@@ -10,33 +12,32 @@ const Photo = ({date, host, mine}) => {
   const [show, setShow] = React.useState();
 
   const fetchPhotoDatas = async () => {
-    const data = await firestoreHandler.getPhotosByDate(host, date);
+    const data = await firebaseHandler.getPhotosByDate(host, date);
     if (data) {
-      console.log(data);
       setPhotoDatas(data);
     } else {
       setPhotoDatas([]);
     }
   };
   const deletePhoto = async (name, docId) => {
-    await firestoreHandler.deletePhoto(host, name, docId);
+    await firebaseHandler.deletePhoto(host, name, docId);
     await fetchPhotoDatas();
   };
   const handleChange = async (e) => {
     for (const file of e.target.files) {
-      await firestoreHandler.addPhoto(host, date, file);
+      await firebaseHandler.addPhoto(host, date, file);
     }
     await fetchPhotoDatas();
   };
 
   React.useEffect(() => {
     if (mine) {
-      setShow('myPhotoPage');
+      setShow('myPhoto');
     } else {
       if (photoDatas.length !== 0) {
-        setShow('friendsPhotoPage');
+        setShow('friendsPhoto');
       } else {
-        setShow('noDataPage');
+        setShow('noData');
       }
     }
   }, [mine, photoDatas]);
@@ -47,7 +48,7 @@ const Photo = ({date, host, mine}) => {
   return (
     <div className="h-100 d-flex px-3 py-3">
       {
-        show === 'myPhotoPage' &&
+        show === 'myPhoto' &&
         <div id="photo-area" className="h-100 w-100 d-flex
         flex-wrap align-content-start">
           <Input id="photo-input" type="file"
@@ -84,7 +85,7 @@ const Photo = ({date, host, mine}) => {
         </div>
       }
       {
-        show === 'friendsPhotoPage' &&
+        show === 'friendsPhoto' &&
         <div id="photo-area" className="h-100 w-100
           d-flex flex-wrap align-content-start">
           {
@@ -107,7 +108,7 @@ const Photo = ({date, host, mine}) => {
         </div>
       }
       {
-        show === 'noDataPage' &&
+        show === 'noData' &&
         <div id="photo-area" className="h-100 w-100 d-flex
           justify-content-center align-items-center h4">
           등록된 Photo가 없습니다.

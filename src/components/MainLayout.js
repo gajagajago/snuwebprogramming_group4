@@ -25,32 +25,26 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import './css/MainLayout.css';
-import firestoreHandler from '../firestoreHandler';
+import firebaseHandler from '../modules/firebaseHandler';
 import PropTypes from 'prop-types';
 
 const Layout = (props) => {
-  const [open, setOpen] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
   const [searchedUser, setSearchedUser] = useState();
   const [followingList, setFollowingList] = useState([]);
 
   const fetchFollowingList = async () => {
-    const data = await firestoreHandler.getFollowing(props.user.uid);
+    const data = await firebaseHandler.getFollowing(props.user.uid);
     if (data) {
       setFollowingList(data);
     } else {
       setFollowingList([]);
     }
   };
-  const openDrawer = () => {
-    setOpen(true);
-  };
-  const closeDrawer = () => {
-    setOpen(false);
-  };
   const searchByEmail = async () => {
-    const result = await firestoreHandler.searchUserByEmail(searchEmail);
+    const result = await firebaseHandler.searchUserByEmail(searchEmail);
     if (result) {
       setSearchedUser(result[0]);
     } else {
@@ -58,10 +52,10 @@ const Layout = (props) => {
     }
   };
   const addFollow = async (following) => {
-    await firestoreHandler.addFollow(props.user.uid, following);
+    await firebaseHandler.addFollow(props.user.uid, following);
     await fetchFollowingList();
     setShowAddFriendModal(false);
-    setOpen(true);
+    setShowDrawer(true);
   };
   const followExist = (uid) => {
     const find = followingList.find((element) => element.following.uid === uid);
@@ -129,7 +123,7 @@ const Layout = (props) => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            onClick={openDrawer}
+            onClick={() => setShowDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
@@ -139,23 +133,24 @@ const Layout = (props) => {
         </Toolbar>
       </AppBar>
       <Drawer
-        open={open}
+        open={showDrawer}
         variant="persistent"
         anchor="left"
       >
         <div id="drawer-container">
           <div id="drawer-header" className="d-flex justify-content-end">
-            <ListItem button component={Link} to="" onClick={closeDrawer}>
+            <ListItem button component={Link}
+              to="" onClick={() => setShowDrawer(false)}>
               <ListItemText primary={'홈'} />
             </ListItem>
-            <IconButton onClick={closeDrawer}>
+            <IconButton onClick={() => setShowDrawer(false)}>
               <ChevronLeftIcon />
             </IconButton>
           </div>
           <Divider />
           <List>
             <ListItem button component={Link} to="/mycalendar"
-              onClick={closeDrawer}
+              onClick={() => setShowDrawer(false)}
               selected={window.location.pathname === '/mycalendar'}>
               <ListItemText primary={'내 캘린더'} />
             </ListItem>
@@ -167,22 +162,29 @@ const Layout = (props) => {
                   size="sm" onClick={() => {
                     setSearchEmail('');
                     setSearchedUser();
-                    setOpen(false); setShowAddFriendModal(true);
+                    setShowDrawer(false);
+                    setShowAddFriendModal(true);
                   } }>팔로우 추가</Button>
               </div>
               {
                 followingList.map((element) => {
                   return (
                     <ListItem
-                      component={Link} to=
-                        {`/friendcalendar/${element.following.uid}`}
-                      selected={window.location.pathname.split('/')[1] ===
-                      'friendcalendar'&&
-                      window.location.pathname.split('/')[2]===
-                      element.following.uid}
-                      key={element.id} button className="pl-4">
-                      <ListItemText primary={`${element.following.email}
-                      (${element.following.name})`} />
+                      component={Link}
+                      to={`/friendcalendar/${element.following.uid}`}
+                      onClick={() => setShowDrawer(false)}
+                      selected={
+                        window.location.pathname.split('/')[1] ===
+                        'friendcalendar' &&
+                        window.location.pathname.split('/')[2] ===
+                        element.following.uid
+                      }
+                      key={element.id} button className="pl-4"
+                    >
+                      <ListItemText
+                        primary={`${element.following.email}
+                        (${element.following.name})`}
+                      />
                     </ListItem>
                   );
                 })

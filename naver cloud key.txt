@@ -1,3 +1,0 @@
-application name : mycalendar
-client id : c5cgt7y1jj
-client secret : 4giwRMopxVDhA3Rv3Bnayizkd7vs8JDNnfLpMWQO
