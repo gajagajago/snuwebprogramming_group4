@@ -45,7 +45,6 @@ const Calendar = ({host, mine}) => {
     setScheLi(scheList);
   };
   const clickDate = (arg) => {
-    // console.log(calendar.current.calendar.view.currentStart);
     const date = new Date(arg.date);
     setClickedDate(date);
     setShowDayDialog(true);
