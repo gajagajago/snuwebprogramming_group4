@@ -1,3 +1,6 @@
+#schedule-container {
+    overflow: auto;
+}
 #true {
     text-decoration: line-through;
     text-decoration-style: solid black;
