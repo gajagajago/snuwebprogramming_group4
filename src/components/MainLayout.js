@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -25,7 +25,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-import './css/MainLayout.css'
+import './css/MainLayout.css';
 import firestoreHandler from '../firestoreHandler';
 
 const Layout = (props) => {
@@ -42,47 +42,54 @@ const Layout = (props) => {
     } else {
       setFollowingList([]);
     }
-  }
+  };
   const openDrawer = () => {
     setOpen(true);
-  }
+  };
   const closeDrawer = () => {
     setOpen(false);
-  }
+  };
   const searchByEmail = async () => {
     const result = await firestoreHandler.searchUserByEmail(searchEmail);
     if (result) {
-      setSearchedUser(result[0])
+      setSearchedUser(result[0]);
     } else {
       setSearchedUser(-1);
     }
-  }
+  };
   const addFollow = async (following) => {
     await firestoreHandler.addFollow(props.user.uid, following);
     await fetchFollowingList();
     setShowAddFriendModal(false);
     setOpen(true);
-  }
+  };
   const followExist = (uid) => {
     const find = followingList.find(element => element.following.uid === uid);
     if (find) {
       return true;
     }
     return false;
-  }
+  };
   useEffect(() => {
     fetchFollowingList();
   }, []);
   return (
     <div>
-      <Modal isOpen={showAddFriendModal} toggle={() => setShowAddFriendModal(!showAddFriendModal)}>
-        <ModalHeader toggle={() => setShowAddFriendModal(!showAddFriendModal)}>팔로우</ModalHeader>
+      <Modal isOpen={showAddFriendModal} toggle={() =>
+        setShowAddFriendModal(!showAddFriendModal)}>
+        <ModalHeader toggle={() => setShowAddFriendModal(!showAddFriendModal)}>
+            팔로우</ModalHeader>
         <ModalBody>
           <div className="d-flex flex-column">
             <InputGroup>
-              <Input type="text" value={searchEmail} onChange={(e) => setSearchEmail(e.target.value)}
-                placeholder="이메일로 검색"
-                onKeyPress={(e) => { if (e.charCode === 13 ) { searchByEmail(); } }}
+              <Input type="text" value={searchEmail} onChange={(e) =>
+                setSearchEmail(e.target.value)}
+              placeholder="이메일로 검색"
+              onKeyPress={(e) => {
+                if (e.charCode === 13 ) {
+                  searchByEmail();
+                }
+              }}
               />
               <InputGroupAddon addonType="append">
                 <Button color="blueGrey" onClick={searchByEmail}>검색</Button>
@@ -93,7 +100,9 @@ const Layout = (props) => {
               <Card body className="mt-2">
                 <CardText>이름: {searchedUser.name}</CardText>
                 <CardText>이메일: {searchedUser.email}</CardText>
-                <Button color="blueGrey" disabled={followExist(searchedUser.uid)} onClick={() => addFollow(searchedUser)}>
+                <Button color="blueGrey"
+                  disabled={followExist(searchedUser.uid)}
+                  onClick={() => addFollow(searchedUser)}>
                   {
                     followExist(searchedUser.uid) &&
                     '팔로우됨'
@@ -137,7 +146,7 @@ const Layout = (props) => {
         <div id="drawer-container">
           <div id="drawer-header" className="d-flex justify-content-end">
             <ListItem button component={Link} to="" onClick={closeDrawer}>
-              <ListItemText primary={"홈"} />
+              <ListItemText primary={'홈'} />
             </ListItem>
             <IconButton onClick={closeDrawer}>
               <ChevronLeftIcon />
@@ -145,28 +154,37 @@ const Layout = (props) => {
           </div>
           <Divider />
           <List>
-            <ListItem button component={Link} to="/mycalendar" onClick={closeDrawer} selected={window.location.pathname === '/mycalendar'}>
-              <ListItemText primary={"내 캘린더"} />
+            <ListItem button component={Link} to="/mycalendar"
+              onClick={closeDrawer}
+              selected={window.location.pathname === '/mycalendar'}>
+              <ListItemText primary={'내 캘린더'} />
             </ListItem>
             <div className="d-flex flex-column w-100 mt-3">
-              <div className="d-flex justify-content-between align-items-center px-3">
+              <div className="d-flex justify-content-between
+                  align-items-center px-3">
                 <div id="friend-list-title">팔로잉</div>
-                <Button className="my-1" color="blueGrey" size="sm" onClick={() => {
-                  setSearchEmail('');
-                  setSearchedUser();
-                  setOpen(false); setShowAddFriendModal(true);
-                } }>팔로우 추가</Button>
+                <Button className="my-1" color="blueGrey"
+                  size="sm" onClick={() => {
+                    setSearchEmail('');
+                    setSearchedUser();
+                    setOpen(false); setShowAddFriendModal(true);
+                  } }>팔로우 추가</Button>
               </div>
               {
                 followingList.map((element) => {
                   return (
                     <ListItem
-                      component={Link} to={`/friendcalendar/${element.following.uid}`}
-                      selected={window.location.pathname.split('/')[1] === 'friendcalendar' && window.location.pathname.split('/')[2] === element.following.uid}
+                      component={Link} to=
+                        {`/friendcalendar/${element.following.uid}`}
+                      selected={window.location.pathname.split('/')[1] ===
+                      'friendcalendar'&&
+                      window.location.pathname.split('/')[2]===
+                      element.following.uid}
                       key={element.id} button className="pl-4">
-                      <ListItemText primary={`${element.following.email}(${element.following.name})`} />
+                      <ListItemText primary={`${element.following.email}
+                      (${element.following.name})`} />
                     </ListItem>
-                  )
+                  );
                 })
               }
             </div>
@@ -174,7 +192,7 @@ const Layout = (props) => {
         </div>
       </Drawer>
     </div>
-  )
-}
+  );
+};
 
 export default Layout;

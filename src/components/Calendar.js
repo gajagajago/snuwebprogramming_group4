@@ -2,9 +2,9 @@ import React from 'react';
 
 import DayDialog from './DayDialog';
 
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import '@fullcalendar/core/main.css';
 import '@fullcalendar/daygrid/main.css';
 
@@ -13,13 +13,15 @@ const formatDate = (date) => {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
   let day = '' + d.getDate();
-  let year = d.getFullYear();
-  if (month.length < 2) 
+  const year = d.getFullYear();
+  if (month.length < 2) {
     month = '0' + month;
-  if (day.length < 2)
+  }
+  if (day.length < 2) {
     day = '0' + day;
+  }
   return [year, month, day].join('-');
-}
+};
 
 const Calendar = (props) => {
   const [showDayDialog, setShowDayDialog] = React.useState(false);
@@ -28,7 +30,7 @@ const Calendar = (props) => {
     const date = new Date(arg.date);
     setClickedDate(date);
     setShowDayDialog(true);
-  }
+  };
   const addMark = (date, list) => {
     const element = document.querySelectorAll(`[data-date='${date}']`)[0];
     const div = document.createElement('div');
@@ -45,7 +47,7 @@ const Calendar = (props) => {
       selfie: 'orange',
       photo: 'cyan',
       schedule: 'blue',
-    }
+    };
     list.forEach((element) => {
       const dot = document.createElement('div');
       dot.style.width = '5px';
@@ -56,7 +58,7 @@ const Calendar = (props) => {
       div.append(dot);
     });
     element.append(div);
-  }
+  };
   const checkMonthEvent = async () => {
     const now = new Date(Date.now());
     const diary = await firestoreHandler.getDiaryByMonth(props.host, now);
@@ -107,7 +109,6 @@ const Calendar = (props) => {
       schedule.forEach((element) => {
         const date = new Date(element.date.toDate());
         const dateString = formatDate(date);
-        
         if (datas[dateString]) {
           if (!datas[dateString].includes('schedule')) {
             datas[dateString].push('schedule');
@@ -117,14 +118,14 @@ const Calendar = (props) => {
         }
       });
     }
-    for (let key in datas) {
-      const element = document.querySelectorAll(`[data-date='${key}']`)[0];
-      element.innerHTML = '';
+    for (const key in datas) {
       if (datas.hasOwnProperty(key)) {
+        const element = document.querySelectorAll(`[data-date='${key}']`)[0];
+        element.innerHTML = '';
         addMark(key, datas[key]);
       }
     }
-  }
+  };
   React.useEffect(() => {
     checkMonthEvent();
   });
@@ -139,12 +140,12 @@ const Calendar = (props) => {
       />
       <FullCalendar
         defaultView="dayGridMonth"
-        plugins={[ dayGridPlugin, interactionPlugin ]}
+        plugins={[dayGridPlugin, interactionPlugin]}
         aspectRatio="1.3"
         dateClick={clickDate}
       />
     </div>
-  )
-}
+  );
+};
 
 export default Calendar;

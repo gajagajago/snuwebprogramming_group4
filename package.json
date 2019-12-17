@@ -45,6 +45,9 @@
         "jsx": true
       },
       "sourceType": "module"
+    },
+    "rules": {
+      "linebreak-style": 0
     }
   },
   "browserslist": {
