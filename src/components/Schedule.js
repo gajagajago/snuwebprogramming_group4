@@ -7,7 +7,8 @@ import './css/Schedule.css';
 const Schedule = ({date, host, mine}) => {
   const [schedule, setSchedule] = React.useState('');
   const [scheduleList, setScheduleList] = React.useState([]);
-  
+  const [show, setShow] = React.useState();
+
   const fetchSchedule = async () => {
     const data = await firestoreHandler.getScheduleByDate(host, date);
     if (data) {
@@ -17,26 +18,22 @@ const Schedule = ({date, host, mine}) => {
     }
   }
   const addSchedule = async () => {
-    if(schedule !== '' && mine) {
+    if(schedule) {
       await firestoreHandler.addSchedule(host, date, schedule);
       await fetchSchedule();
       setSchedule('');
     }
   }
   const deleteSchedule = async (docId) => {
-    if(mine) {
       await firestoreHandler.deleteSchedule(docId);
       await fetchSchedule();
-    }
   }
   const doneChange = async (docId, done) => {
-    if(mine) {
-      if(done === false) {
+    if(done === false) {
         await firestoreHandler.doneSchedule(docId);
       } else {
         await firestoreHandler.undoSchedule(docId);
       } await fetchSchedule();
-    }
   }
   const handleKeyEvent = (e) => {
     if(window.event.keyCode === 13) {
@@ -47,42 +44,75 @@ const Schedule = ({date, host, mine}) => {
   }
   React.useEffect(() => {
     fetchSchedule();
-  }, [])
+  }, []);
+  React.useEffect(() => {
+    if(mine) {
+      setShow('editableSchedulePage');
+    } else {
+      if(scheduleList.length !== 0) {
+        setShow('uneditableSchedulePage')
+      } else {
+        setShow('noDataPage');
+      }
+    }
+  }, [mine, scheduleList]);
   
   return (
-    <div>
-      <div className="d-flex align-items-center">
-        <Input id ="inputText" placeholder="add your task" 
-          className="w-70" onKeyPress={handleKeyEvent}
-          type="text" onChange={(e) => setSchedule(e.target.value)} 
-          value={schedule}>
-        </Input>
-        <div> 
+    <div className="h-100">
+      {
+      show === 'editableSchedulePage' && 
+      <div>
+        <div className="d-flex align-items-center">
+          <Input id ="inputText" placeholder="add your task" 
+            className="w-70" onKeyPress={handleKeyEvent}
+            type="text" onChange={(e) => setSchedule(e.target.value)} 
+            value={schedule}>
+          </Input>
           <Button color="blue" onClick={addSchedule}> add </Button>
         </div>
+        {
+          scheduleList.map((element) => {
+            let check = (element.done === true) ? 'true' : 'false'
+            console.log(check)
+            return (
+              <div className = "w-100 d-flex align-items-center justify-content-between" key={element.id} >
+                <div className= "d-flex align-items-center" >
+                  <Checkbox onChange={() => doneChange(element.id, element.done)} 
+                    checked={element.done} color="primary" 
+                    inputProps={{'aria-label': 'secondary checkbox'}}/>              
+                  <div id = {check}> 
+                    {element.content}
+                  </div>
+                </div> 
+                <Button color="yellow" onClick={() => deleteSchedule(element.id)}>delete</Button>
+              </div>
+            )})}
       </div>
-      <div>{
+      }
+      {
+        show === 'uneditableSchedulePage' &&
         scheduleList.map((element) => {
           let check = (element.done === true) ? 'true' : 'false'
-          console.log(check)
           return (
-            <div className = "w-100 d-flex align-items-center justify-content-between" key={element.id}>
-              <div className= "d-flex align-items-center">
-                <Checkbox onChange={() => doneChange(element.id, element.done)} 
-                  checked={element.done} color="primary" 
-                  inputProps={{'aria-label': 'secondary checkbox'}}/>              
-                <div id = {check}> 
-                  {element.content}
-                </div>
+            <div className = "w-100 d-flex align-items-center" key={element.id}>
+              <Checkbox 
+                checked={element.done} color="primary" 
+                inputProps={{'aria-label': 'secondary checkbox'}}/>              
+              <div id = {check}> 
+                {element.content}
               </div>
-              <Button color="yellow" onClick={() => deleteSchedule(element.id)}>delete</Button>
-            </div>
+          </div> 
           )
         })
       }
-      </div>
+      {
+        show === 'noDataPage' &&
+        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+          <span className="h4"> 등록된 Schedule이 없습니다. </span>
+        </div>
+      }
     </div>
-  )
-}
+    )
+  }
 
 export default Schedule;

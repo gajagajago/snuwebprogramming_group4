@@ -1,5 +1,6 @@
 #diary {
   height: calc(100% - 45px);
+  white-space: pre-wrap;
 }
 #status {
   height: calc(100% - 45px);

@@ -108,16 +108,23 @@ const Diary = ({ host, date, mine}) => {
         <div className="d-flex w-100 h-100 flex-column">
           {
             status === '' &&
-            <textarea type="text" className="w-100" id="diary" onChange={(e) => { setText(e.target.value) }} value={text}></textarea>
+            <textarea type="text" className="w-100" id="diary" value={text}
+            onChange={(e) => { setText(e.target.value) }}
+            onKeyPress={(e) => { if (e.charCode === 13  && !e.shiftKey) { e.preventDefault(); addDiary(); } } }
+            />
           }
           {
             status !== '' &&
             <div className="w-100 d-flex justify-content-center align-items-center h4" id="status">{status}</div>
           }
           <div className="d-flex justify-content-end mt-2">
-            <Button color="blue" onClick={startRecord} className="mr-1">Start Recording</Button>
-            <Button color="blue" onClick={stopRecord} className="mr-1">Stop Recording</Button>
-            <Button color="brown" onClick={addDiary} >Save</Button>
+            <Button color="blue" className="mr-1" onClick={startRecord}>Start Recording</Button>
+            <Button color="blue" className="mr-1" onClick={stopRecord}>Stop Recording</Button>
+            <Button color="brown" 
+              onClick={addDiary} 
+            >
+            Save
+            </Button>
           </div>
         </div>
       }
@@ -135,21 +142,6 @@ const Diary = ({ host, date, mine}) => {
           <span className="h4">등록된 Diary가 없습니다.</span>
         </div>
       }
-      {/* {
-        spinner &&
-        <div>
-          <div>{status}</div>
-          <Spinner />
-        </div>
-      }
-      { !spinner &&
-        <textarea type="text" className="w-100" id="diary" onChange={(e) => { setText(e.target.value) }} value={text}></textarea>
-      }
-      <div className="d-flex justify-content-end mt-2">
-        <Button color="blue" onClick={startRecord} className="mr-1">Start Recording</Button>
-        <Button color="blue" onClick={stopRecord} className="mr-1">Stop Recording</Button>
-        <Button color="brown" onClick={addDiary} >Save</Button>
-      </div> */}
     </div>
   )
 }
