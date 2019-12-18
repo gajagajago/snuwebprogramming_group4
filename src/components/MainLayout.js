@@ -28,7 +28,7 @@ import './css/MainLayout.css';
 import firebaseHandler from '../modules/firebaseHandler';
 import PropTypes from 'prop-types';
 
-const Layout = (props) => {
+const Layout = ({user, title}) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
@@ -36,7 +36,7 @@ const Layout = (props) => {
   const [followingList, setFollowingList] = useState([]);
 
   const fetchFollowingList = async () => {
-    const data = await firebaseHandler.getFollowing(props.user.uid);
+    const data = await firebaseHandler.getFollowing(user.uid);
     if (data) {
       setFollowingList(data);
     } else {
@@ -52,7 +52,7 @@ const Layout = (props) => {
     }
   };
   const addFollow = async (following) => {
-    await firebaseHandler.addFollow(props.user.uid, following);
+    await firebaseHandler.addFollow(user.uid, following);
     await fetchFollowingList();
     setShowAddFriendModal(false);
     setShowDrawer(true);
@@ -128,7 +128,7 @@ const Layout = (props) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6">
-            {props.title}
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>

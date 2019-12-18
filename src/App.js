@@ -7,7 +7,6 @@ import {
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import purple from '@material-ui/core/colors/purple';
 
 import Home from './pages/Home';
 import MyCalendar from './pages/MyCalendar';
@@ -23,7 +22,6 @@ const App = () => {
   const theme = createMuiTheme({
     palette: {
       primary: blueGrey,
-      secondary: purple,
     },
     status: {
       danger: 'orange',

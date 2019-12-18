@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, Input} from 'reactstrap';
-import AddIcon from '@material-ui/icons/Add';
+import {Button, Input, Spinner} from 'reactstrap';
 
 import firebaseHandler from '../modules/firebaseHandler';
 
 import './css/Photo.css';
 const Photo = ({date, host, mine}) => {
   const [photoDatas, setPhotoDatas] = React.useState([]);
+  const [uploading, setUploading] = React.useState(false);
   const [show, setShow] = React.useState();
 
   const fetchPhotoDatas = async () => {
@@ -24,10 +24,12 @@ const Photo = ({date, host, mine}) => {
     await fetchPhotoDatas();
   };
   const handleChange = async (e) => {
+    setUploading(true);
     for (const file of e.target.files) {
       await firebaseHandler.addPhoto(host, date, file);
     }
     await fetchPhotoDatas();
+    setUploading(false);
   };
 
   React.useEffect(() => {
@@ -77,9 +79,13 @@ const Photo = ({date, host, mine}) => {
             })
           }
           <label htmlFor="photo-input">
-            <div id="add-box" className="border d-flex
-              justify-content-center align-items-center display-4 mx-1 my-1">
-              <AddIcon color="primary" />
+            <div id="add-box" className="border d-flex justify-content-center
+              align-items-center display-4 mx-1 my-1 h4 text-blueGrey">
+              {
+                uploading ?
+                <Spinner color="blueGrey" /> :
+                '+'
+              }
             </div>
           </label>
         </div>
