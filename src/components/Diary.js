@@ -36,8 +36,8 @@ const Diary = ({host, date, mine}) => {
       tempRecorder.startRecording();
       setRecorder(tempRecorder);
     };
-    const error = (error) => {
-      console.log(error);
+    const error = () => {
+      alert('마이크가 연결되어있지 않습니다');
     };
     navigator.getUserMedia({audio: true}, success, error);
   };

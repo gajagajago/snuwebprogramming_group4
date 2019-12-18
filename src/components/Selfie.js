@@ -56,10 +56,18 @@ const Selfie = ({date, host, mine}) => {
         show === 'mySelfie' &&
         <div className="h-100 w-100 d-flex flex-column
           justify-content-center align-items-center">
-          <img id="selfie-image" src={selfieData ?
-            selfieData.imageUrl : ''} alt="selfie" />
-          <span className="h4 my-2">{selfieData && selfieData.face ?
-            selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
+          <img
+            id="selfie-image"
+            src={selfieData ? selfieData.imageUrl : ''}
+            alt="selfie"
+          />
+          <span className="h4 my-2">
+            {
+              selfieData && selfieData.face ?
+              selfieData.face.emotion.value :
+              '얼굴 인식 불가'
+            }
+          </span>
           <Button color="red" onClick={deleteSelfie}>삭제</Button>
         </div>
       }
@@ -68,14 +76,13 @@ const Selfie = ({date, host, mine}) => {
         <div className="h-100 w-100 d-flex justify-content-center
           align-items-center">
           <label htmlFor="selfie-input">
-            <div id="selfie-add-button" className="bg-blueGrey
-            text-light rounded px-3 py-1">
+            <div
+              id="selfie-add-button"
+              className="bg-blueGrey text-light rounded px-3 py-1"
+            >
               {
-                uploading &&
-                <Spinner size="sm" color="light" />
-              }
-              {
-                !uploading &&
+                uploading ?
+                <Spinner size="sm" color="light" /> :
                 '추가하기'
               }
             </div>
@@ -86,10 +93,17 @@ const Selfie = ({date, host, mine}) => {
         show === 'friendsSelfie' &&
         <div className="h-100 w-100 d-flex flex-column
           justify-content-center align-items-center">
-          <img id="selfie-image" src={selfieData ?
-            selfieData.imageUrl : ''} alt="selfie" />
-          <span className="h4 mb-3">{selfieData && selfieData.face ?
-            selfieData.face.emotion.value : '얼굴 인식 불가'}</span>
+          <img id="selfie-image"
+            src={selfieData ? selfieData.imageUrl : ''}
+            alt="selfie"
+          />
+          <span className="h4 mb-3">
+            {
+              selfieData && selfieData.face ?
+              selfieData.face.emotion.value :
+              '얼굴 인식 불가'
+            }
+          </span>
         </div>
       }
       {

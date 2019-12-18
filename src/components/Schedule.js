@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, Input} from 'reactstrap';
+import {Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import firebaseHandler from '../modules/firebaseHandler';
@@ -67,31 +67,41 @@ const Schedule = ({date, host, mine}) => {
         show === 'mySchedule' &&
       <div>
         <div className="d-flex align-items-center mb-3">
-          <Input id ="inputText" placeholder="add your task"
-            className="w-70" onKeyPress={handleKeyEvent}
-            type="text" onChange={(e) => setSchedule(e.target.value)}
-            value={schedule}>
-          </Input>
-          <Button color="blue" onClick={addSchedule}> add </Button>
+          <InputGroup>
+            <Input id ="inputText" placeholder="add your task"
+              className="w-70" onKeyPress={handleKeyEvent}
+              type="text" onChange={(e) => setSchedule(e.target.value)}
+              value={schedule}>
+            </Input>
+            <InputGroupAddon addonType="append">
+              <Button color="blueGrey" onClick={addSchedule}>추가</Button>
+            </InputGroupAddon>
+          </InputGroup>
         </div>
         {
           scheduleList.map((element) => {
             const check = (element.done === true) ? 'true' : 'false';
             return (
-              <div className="w-100 d-flex align-items-center
-              justify-content-between"
-              key={element.id} >
+              <div
+                className="w-100 d-flex align-items-center
+                  justify-content-between"
+                key={element.id}
+              >
                 <div className= "d-flex align-items-center" >
-                  <Checkbox onChange={() =>
-                    doneChange(element.id, element.done)}
-                  checked={element.done} color="primary"
-                  inputProps={{'aria-label': 'secondary checkbox'}}/>
+                  <Checkbox
+                    onChange={() => doneChange(element.id, element.done)}
+                    checked={element.done} color="primary"
+                  />
                   <div className={check}>
                     {element.content}
                   </div>
                 </div>
-                <Button color="yellow" onClick={() =>
-                  deleteSchedule(element.id)}>delete</Button>
+                <Button color="yellow" size="sm"
+                  className="text-light"
+                  onClick={() => deleteSchedule(element.id)}
+                >
+                  삭제
+                </Button>
               </div>
             );
           }
