@@ -53,7 +53,7 @@ const Photo = ({date, host, mine}) => {
         show === 'myPhoto' &&
         <div id="photo-area" className="h-100 w-100 d-flex
         flex-wrap align-content-start">
-          <Input id="photo-input" type="file"
+          <Input id="photo-input" type="file" disabled={uploading}
             multiple onChange={handleChange} />
           {
             photoDatas.map((photoData) => {

@@ -19,12 +19,14 @@ const Selfie = ({date, host, mine}) => {
     }
   };
   const handleChange = async (e) => {
-    setUploading(true);
     const file = e.target.files[0];
-    const face = await naverAPIHandler.analyzeFace(file);
-    await firebaseHandler.addSelfie(host, date, file, face);
-    await fetchSelfieData();
-    setUploading(false);
+    if (file) {
+      setUploading(true);
+      const face = await naverAPIHandler.analyzeFace(file);
+      await firebaseHandler.addSelfie(host, date, file, face);
+      await fetchSelfieData();
+      setUploading(false);
+    }
   };
   const deleteSelfie = async () => {
     await firebaseHandler.deleteSelfie(
@@ -50,8 +52,10 @@ const Selfie = ({date, host, mine}) => {
     }
   }, [mine, selfieData]);
   return (
-    <div className="h-100 d-flex">
-      <Input id="selfie-input" type="file" onChange={handleChange} />
+    <div className="h-100 d-flex px-3 py-3">
+      <Input id="selfie-input" disabled={uploading}
+        type="file" onChange={handleChange}
+      />
       {
         show === 'mySelfie' &&
         <div className="h-100 w-100 d-flex flex-column
@@ -76,7 +80,17 @@ const Selfie = ({date, host, mine}) => {
         <div className="h-100 w-100 d-flex justify-content-center
           align-items-center">
           <label htmlFor="selfie-input">
-            <div
+            <div id="selfie-add-box"
+              className="border d-flex justify-content-center
+                align-items-center display-4 mx-1 my-1 h4 text-blueGrey"
+            >
+              {
+                uploading ?
+                <Spinner color="blueGrey" /> :
+                '+'
+              }
+            </div>
+            {/* <div
               id="selfie-add-button"
               className="bg-blueGrey text-light rounded px-3 py-1"
             >
@@ -85,7 +99,7 @@ const Selfie = ({date, host, mine}) => {
                 <Spinner size="sm" color="light" /> :
                 '추가하기'
               }
-            </div>
+            </div> */}
           </label>
         </div>
       }
