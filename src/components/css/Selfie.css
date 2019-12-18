@@ -5,6 +5,12 @@
 #selfie-input {
   display: none;
 }
-#selfie-add-button {
+label[for="selfie-input"] {
+  width: 100%;
+  height: 100%;
+}
+#selfie-add-box {
+  width: 100%;
+  height: 100%;
   cursor: pointer;
 }
