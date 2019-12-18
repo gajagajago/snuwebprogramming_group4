@@ -80,8 +80,10 @@ const Selfie = ({date, host, mine}) => {
         <div className="h-100 w-100 d-flex justify-content-center
           align-items-center">
           <label htmlFor="selfie-input">
-            <div id="selfie-add-box" className="border d-flex justify-content-center
-              align-items-center display-4 mx-1 my-1 h4 text-blueGrey">
+            <div id="selfie-add-box"
+              className="border d-flex justify-content-center
+                align-items-center display-4 mx-1 my-1 h4 text-blueGrey"
+            >
               {
                 uploading ?
                 <Spinner color="blueGrey" /> :
